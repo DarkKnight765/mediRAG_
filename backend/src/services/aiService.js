@@ -1,5 +1,4 @@
 const fs = require("fs");
-const fs = require("fs");
 const genAI = require("../config/gemini");
 const env = require("../config/env");
 
