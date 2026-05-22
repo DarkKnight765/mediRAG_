@@ -15,3 +15,30 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Conversation {
+  id         Int       @id @default(autoincrement())
+  title      String?
+  messages   Message[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId Int
+  role           String
+  content        String
+  modelOutput    ModelOutput?
+  createdAt      DateTime     @default(now())
+}
+
+model ModelOutput {
+  id         Int      @id @default(autoincrement())
+  message    Message  @relation(fields: [messageId], references: [id])
+  messageId  Int      @unique
+  engine     String
+  raw        String   @db.Text
+  createdAt  DateTime @default(now())
+}
