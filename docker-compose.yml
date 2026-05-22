@@ -20,12 +20,15 @@ services:
       - PORT=3001
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - LOCAL_MODEL_URL=http://mock-model:8000
     volumes:
       - ./backend:/app
       - /app/node_modules
       - uploads:/app/uploads
     expose:
       - "3001"
+    depends_on:
+      - mock-model
 
   nginx:
     image: nginx:alpine
@@ -36,6 +39,16 @@ services:
     depends_on:
       - frontend
       - backend
+
+  mock-model:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: npm run mock-model
+    ports:
+      - "8000:8000"
+    environment:
+      - MOCK_MODEL_PORT=8000
 
 volumes:
   uploads:
