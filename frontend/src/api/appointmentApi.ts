@@ -1,9 +1,11 @@
 // src/api/appointmentApi.ts
-import axios from 'axios';
+import axios from "axios";
+import API_BASE_URL from "./config";
 
-const BASE_URL = 'http://localhost:3001/api';
-
-export const getAppointments = () => axios.get(`${BASE_URL}/appointments`);
-export const createAppointment = (appointmentData: any) => axios.post(`${BASE_URL}/appointments`, appointmentData);
-export const updateAppointment = (id: string, appointmentData: any) => axios.put(`${BASE_URL}/appointments/${id}`, appointmentData);
-export const deleteAppointment = (id: string) => axios.delete(`${BASE_URL}/appointments/${id}`);
+export const getAppointments = () => axios.get(`${API_BASE_URL}/appointments`);
+export const createAppointment = (appointmentData: any) =>
+  axios.post(`${API_BASE_URL}/appointments`, appointmentData);
+export const updateAppointment = (id: string, appointmentData: any) =>
+  axios.put(`${API_BASE_URL}/appointments/${id}`, appointmentData);
+export const deleteAppointment = (id: string) =>
+  axios.delete(`${API_BASE_URL}/appointments/${id}`);
