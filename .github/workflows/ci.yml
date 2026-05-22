@@ -47,6 +47,7 @@ jobs:
         run: |
           nohup npm run mock-model > mock.log 2>&1 &
           sleep 1
+          npm run test:unit
           npm run test:integration
 
       - name: Build frontend

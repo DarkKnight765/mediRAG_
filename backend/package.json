@@ -7,7 +7,8 @@
     "dev": "node server.js",
     "mock-model": "node mock_model_server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:integration": "node test/run_ai_integration_test.js"
+    "test:integration": "node test/run_ai_integration_test.js",
+    "test:unit": "node test/unit/aiService.unit.js"
   },
   "keywords": [],
   "author": "",

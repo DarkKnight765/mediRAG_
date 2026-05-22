@@ -16,7 +16,20 @@ function requireEnv(name) {
 module.exports = {
   port: process.env.PORT || 3001,
   // Make GEMINI_API_KEY optional at process startup so CI/smoke checks don't fail.
-  geminiKey: process.env.GEMINI_API_KEY || null,
+  // Support reading secret from a file (e.g. Kubernetes secret, Docker secret)
+  geminiKey: (() => {
+    const file = process.env.GEMINI_API_KEY_FILE;
+    if (file) {
+      try {
+        const fs = require("fs");
+        const val = fs.readFileSync(file, "utf8").trim();
+        if (val) return val;
+      } catch (e) {
+        // ignore and fallback
+      }
+    }
+    return process.env.GEMINI_API_KEY || null;
+  })(),
   modelName: process.env.MODEL_NAME || "gemini-1.5-flash",
   corsOrigins: (process.env.CORS_ORIGIN || defaultCorsOrigins.join(","))
     .split(",")
