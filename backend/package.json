@@ -4,12 +4,15 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "ts-node server.js",
+    "dev": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^7.5.0",

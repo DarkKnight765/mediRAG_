@@ -30,6 +30,7 @@ graph TD
 ## ✨ Key Features
 
 ### 🔍 X-ray and Document Diagnosis
+
 - AI-powered analysis of medical images and documents
 - Quick and accurate diagnoses with confidence levels
 - Support for various file formats including images and PDFs
@@ -38,6 +39,7 @@ graph TD
 ![X-ray Analysis](./Images/X-ray.png)
 
 ### 🥗 Personalized Health Plans
+
 - Tailored nutrition recommendations based on individual profiles
 - Custom sleep routines addressing specific sleep issues
 - Personalized caloric intake and macronutrient distribution
@@ -46,6 +48,7 @@ graph TD
 ![Health Plans](./Images/image.png)
 
 ### 📅 Appointment Scheduling
+
 - Intuitive interface for booking medical appointments
 - Selection from various healthcare professionals
 - Customizable appointment types and reasons
@@ -55,6 +58,7 @@ graph TD
 ![Email Confirmation](./Images/Email.png)
 
 ### 🧠 Mental Health Support
+
 - 24/7 access to AI-assisted mental health resources
 - Interactive chatbot with empathetic responses
 - Integration with professional support services
@@ -64,38 +68,42 @@ graph TD
 
 ## 🛠️ Technology Stack
 
-| Layer | Technologies |
-|-------|-------------|
-| **Frontend** | React.js, TypeScript, Tailwind CSS |
-| **Backend** | Node.js, Express |
-| **AI Integration** | Gemini API |
-| **File Processing** | Multer, pdf-img-convert |
-| **Styling** | Tailwind CSS, Lucide React (icons) |
-| **Routing** | React Router |
-| **HTTP Requests** | Axios |
+| Layer               | Technologies                       |
+| ------------------- | ---------------------------------- |
+| **Frontend**        | React.js, TypeScript, Tailwind CSS |
+| **Backend**         | Node.js, Express                   |
+| **AI Integration**  | Gemini API                         |
+| **File Processing** | Multer, pdf-img-convert            |
+| **Styling**         | Tailwind CSS, Lucide React (icons) |
+| **Routing**         | React Router                       |
+| **HTTP Requests**   | Axios                              |
 
 ## 🚀 Setup Instructions
 
 ### Prerequisites
-- Node.js (v14 or higher)
+
+- Node.js (v22.12 or higher)
 - npm or yarn
 - Gemini API key
 
 ### Installation
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/10vulture1005/medirag.git
    cd medirag
    ```
 
 2. **Setup the backend**:
+
    ```bash
    cd backend
    npm install
    ```
 
 3. **Setup the frontend**:
+
    ```bash
    cd ../frontend
    npm install
@@ -103,6 +111,7 @@ graph TD
 
 4. **Configure environment variables**:
    Create a `.env` file in the backend directory with:
+
    ```
    PORT=3001
    GEMINI_API_KEY=YOUR_GEMINI_API_KEY
@@ -110,14 +119,16 @@ graph TD
    ```
 
 5. **Start the development servers**:
-   
+
    For backend:
+
    ```bash
    cd backend
    npm run dev
    ```
-   
+
    For frontend:
+
    ```bash
    cd frontend
    npm start
@@ -128,14 +139,13 @@ graph TD
 
 ## 📡 API Endpoints
 
-| Endpoint | Method | Description | Request Body | Response |
-|----------|--------|-------------|--------------|----------|
-| `/api/analyze-image` | POST | Analyze medical images | File upload (image/PDF) | Diagnosis results with confidence level |
-| `/api/HealthPlans` | POST | Generate health plans | Age, weight, height, activity level, dietary restrictions, sleep issues | Personalized diet and sleep routine |
-| `/api/mental-health-chat` | POST | Mental health chat | User message | AI assistant response |
-| `/api/test` | GET | Test backend connectivity | - | Connection status |
-| `/api/appointments` | Various | Manage appointments | Appointment details | Confirmation/details |
-
+| Endpoint                  | Method  | Description               | Request Body                                                            | Response                                |
+| ------------------------- | ------- | ------------------------- | ----------------------------------------------------------------------- | --------------------------------------- |
+| `/api/analyze-image`      | POST    | Analyze medical images    | File upload (image/PDF)                                                 | Diagnosis results with confidence level |
+| `/api/HealthPlans`        | POST    | Generate health plans     | Age, weight, height, activity level, dietary restrictions, sleep issues | Personalized diet and sleep routine     |
+| `/api/mental-health-chat` | POST    | Mental health chat        | User message                                                            | AI assistant response                   |
+| `/api/test`               | GET     | Test backend connectivity | -                                                                       | Connection status                       |
+| `/api/appointments`       | Various | Manage appointments       | Appointment details                                                     | Confirmation/details                    |
 
 ## 🔄 Component Flow
 
@@ -145,16 +155,16 @@ flowchart TB
     A --> C[HealthPlans]
     A --> D[AppointmentScheduling]
     A --> E[MentalHealthSupport]
-    
+
     B -- "Upload Image" --> B1[Backend API]
     B1 -- "AI Analysis" --> B2[Display Results]
-    
+
     C -- "Submit Health Info" --> C1[Backend API]
     C1 -- "Generate Plan" --> C2[Display Health Plan]
-    
+
     D -- "Book Appointment" --> D1[Save Appointment]
     D1 --> D2[Send Confirmation]
-    
+
     E -- "User Message" --> E1[Backend API]
     E1 -- "AI Response" --> E2[Display Response]
 ```
@@ -193,10 +203,8 @@ We welcome contributions to improve MediRAG. Please follow these steps:
 5. Push to the branch (`git push origin feature/AmazingFeature`)
 6. Open a Pull Request
 
-
 ## 👏 Acknowledgments
 
 - Gemini for providing the AI models
 - React and Node.js communities for excellent documentation
 - All contributors who have helped improve this project
-

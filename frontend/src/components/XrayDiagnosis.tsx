@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Upload, FileText, AlertCircle, Loader } from 'lucide-react';
+import React, { useState } from "react";
+import { Upload, AlertCircle, Loader } from "lucide-react";
 
 interface DiagnosisResult {
   primaryDiagnosis: string;
@@ -10,7 +10,10 @@ interface DiagnosisResult {
 }
 
 const Alert: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+  <div
+    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+    role="alert"
+  >
     <span className="block sm:inline">{children}</span>
   </div>
 );
@@ -32,22 +35,27 @@ const ImageAnalysisPage: React.FC = () => {
     setResult(null);
 
     const formData = new FormData();
-    if (file) formData.append('file', file);
+    if (file) formData.append("file", file);
 
     try {
-      const response = await fetch('https://bookish-computing-machine-7vp9jp6g4q94hpgg9-3001.app.github.dev/api/analyze-image', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetch(
+        "https://bookish-computing-machine-7vp9jp6g4q94hpgg9-3001.app.github.dev/api/analyze-image",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
 
       if (!response.ok) {
-        throw new Error('Server error');
+        throw new Error("Server error");
       }
 
       const data: DiagnosisResult = await response.json();
       setResult(data);
     } catch (err) {
-      setError('An error occurred while processing your request. Please try again.');
+      setError(
+        "An error occurred while processing your request. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -56,14 +64,20 @@ const ImageAnalysisPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-blue-800 mb-8 text-center">Image and PDF Analysis</h1>
-        
+        <h1 className="text-4xl font-bold text-blue-800 mb-8 text-center">
+          Image and PDF Analysis
+        </h1>
+
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold text-blue-700 mb-4">Upload an Image or PDF for Analysis</h2>
-          
+          <h2 className="text-2xl font-semibold text-blue-700 mb-4">
+            Upload an Image or PDF for Analysis
+          </h2>
+
           <div className="flex flex-col items-center justify-center border-2 border-dashed border-blue-300 rounded-lg p-6 hover:border-blue-500 transition duration-300 mb-6">
             <Upload className="w-12 h-12 text-blue-500 mb-2" />
-            <p className="text-blue-700 font-semibold mb-2">Upload Image or PDF</p>
+            <p className="text-blue-700 font-semibold mb-2">
+              Upload Image or PDF
+            </p>
             <input
               type="file"
               accept="image/*,.pdf"
@@ -79,14 +93,14 @@ const ImageAnalysisPage: React.FC = () => {
             </label>
             {file && <p className="mt-2 text-sm text-gray-600">{file.name}</p>}
           </div>
-          
+
           <button
             onClick={handleSubmit}
             disabled={!file || loading}
             className={`w-full py-3 rounded-full text-white font-semibold ${
               !file || loading
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600'
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
             } transition duration-300`}
           >
             {loading ? (
@@ -94,7 +108,9 @@ const ImageAnalysisPage: React.FC = () => {
                 <Loader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
                 Analyzing...
               </span>
-            ) : 'Analyze File'}
+            ) : (
+              "Analyze File"
+            )}
           </button>
         </div>
 
@@ -107,21 +123,34 @@ const ImageAnalysisPage: React.FC = () => {
 
         {result && (
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">Analysis Results</h2>
+            <h2 className="text-2xl font-semibold text-blue-700 mb-4">
+              Analysis Results
+            </h2>
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-medium text-blue-600">Primary Diagnosis:</h3>
+                <h3 className="text-lg font-medium text-blue-600">
+                  Primary Diagnosis:
+                </h3>
                 <p className="text-gray-800">{result.primaryDiagnosis}</p>
               </div>
               <div>
-                <h3 className="text-lg font-medium text-blue-600">Confidence Level:</h3>
+                <h3 className="text-lg font-medium text-blue-600">
+                  Confidence Level:
+                </h3>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4 dark:bg-gray-700">
-                  <div className="bg-blue-600 h-2.5 rounded-full" style={{width: `${result.confidenceLevel}%`}}></div>
+                  <div
+                    className="bg-blue-600 h-2.5 rounded-full"
+                    style={{ width: `${result.confidenceLevel}%` }}
+                  ></div>
                 </div>
-                <p className="text-gray-800">{result.confidenceLevel}% confidence</p>
+                <p className="text-gray-800">
+                  {result.confidenceLevel}% confidence
+                </p>
               </div>
               <div>
-                <h3 className="text-lg font-medium text-blue-600">Additional Findings:</h3>
+                <h3 className="text-lg font-medium text-blue-600">
+                  Additional Findings:
+                </h3>
                 <ul className="list-disc list-inside text-gray-800">
                   {result.additionalFindings.map((finding, index) => (
                     <li key={index}>{finding}</li>
@@ -129,11 +158,15 @@ const ImageAnalysisPage: React.FC = () => {
                 </ul>
               </div>
               <div>
-                <h3 className="text-lg font-medium text-blue-600">Recommended Actions:</h3>
+                <h3 className="text-lg font-medium text-blue-600">
+                  Recommended Actions:
+                </h3>
                 <p className="text-gray-800">{result.recommendedActions}</p>
               </div>
               <div>
-                <h3 className="text-lg font-medium text-blue-600">Detailed AI Analysis:</h3>
+                <h3 className="text-lg font-medium text-blue-600">
+                  Detailed AI Analysis:
+                </h3>
                 <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
                   {result.aiAnalysis}
                 </pre>

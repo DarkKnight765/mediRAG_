@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Utensils, Moon, AlertCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Utensils, Moon, AlertCircle } from "lucide-react";
 
 interface HealthPlanData {
   diet_plan: {
@@ -26,20 +25,24 @@ interface HealthPlanData {
 
 const HealthPlans: React.FC = () => {
   const [formData, setFormData] = useState({
-    age: '',
-    weight: '',
-    height: '',
-    activityLevel: '',
-    dietaryRestrictions: '',
-    sleepIssues: ''
+    age: "",
+    weight: "",
+    height: "",
+    activityLevel: "",
+    dietaryRestrictions: "",
+    sleepIssues: "",
   });
   const [healthPlan, setHealthPlan] = useState<HealthPlanData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,23 +52,28 @@ const HealthPlans: React.FC = () => {
     setHealthPlan(null);
 
     try {
-      const response = await fetch('https://bookish-computing-machine-7vp9jp6g4q94hpgg9-3001.app.github.dev/api/HealthPlans', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        "https://bookish-computing-machine-7vp9jp6g4q94hpgg9-3001.app.github.dev/api/HealthPlans",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
         },
-        body: JSON.stringify(formData),
-      });
+      );
 
       if (!response.ok) {
-        throw new Error('Server error');
+        throw new Error("Server error");
       }
 
       const data = await response.json();
-      console.log('Received data:', data);
+      console.log("Received data:", data);
       setHealthPlan(data.healthPlan);
     } catch (err) {
-      setError('An error occurred while processing your request. Please try again.');
+      setError(
+        "An error occurred while processing your request. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -76,14 +84,23 @@ const HealthPlans: React.FC = () => {
       {/* Header and other components ... */}
 
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-blue-800 mb-8 text-center">Personalized Health Plans</h1>
-        
+        <h1 className="text-4xl font-bold text-blue-800 mb-8 text-center">
+          Personalized Health Plans
+        </h1>
+
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold text-blue-700 mb-4">Health Questionnaire</h2>
-          
+          <h2 className="text-2xl font-semibold text-blue-700 mb-4">
+            Health Questionnaire
+          </h2>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="age" className="block text-sm font-medium text-gray-700">Age</label>
+              <label
+                htmlFor="age"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Age
+              </label>
               <input
                 type="number"
                 id="age"
@@ -97,7 +114,12 @@ const HealthPlans: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="weight" className="block text-sm font-medium text-gray-700">Weight (kg)</label>
+              <label
+                htmlFor="weight"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Weight (kg)
+              </label>
               <input
                 type="number"
                 id="weight"
@@ -112,7 +134,12 @@ const HealthPlans: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="height" className="block text-sm font-medium text-gray-700">Height (cm)</label>
+              <label
+                htmlFor="height"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Height (cm)
+              </label>
               <input
                 type="number"
                 id="height"
@@ -126,7 +153,12 @@ const HealthPlans: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="activityLevel" className="block text-sm font-medium text-gray-700">Activity Level</label>
+              <label
+                htmlFor="activityLevel"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Activity Level
+              </label>
               <select
                 id="activityLevel"
                 name="activityLevel"
@@ -144,7 +176,12 @@ const HealthPlans: React.FC = () => {
               </select>
             </div>
             <div>
-              <label htmlFor="dietaryRestrictions" className="block text-sm font-medium text-gray-700">Dietary Restrictions</label>
+              <label
+                htmlFor="dietaryRestrictions"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Dietary Restrictions
+              </label>
               <input
                 type="text"
                 id="dietaryRestrictions"
@@ -156,7 +193,12 @@ const HealthPlans: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="sleepIssues" className="block text-sm font-medium text-gray-700">Sleep Issues</label>
+              <label
+                htmlFor="sleepIssues"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Sleep Issues
+              </label>
               <textarea
                 id="sleepIssues"
                 name="sleepIssues"
@@ -172,17 +214,20 @@ const HealthPlans: React.FC = () => {
               disabled={loading}
               className={`w-full py-3 rounded-full text-white font-semibold ${
                 loading
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600'
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
               } transition duration-300`}
             >
-              {loading ? 'Generating...' : 'Generate Health Plan'}
+              {loading ? "Generating..." : "Generate Health Plan"}
             </button>
           </form>
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <div
+            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+            role="alert"
+          >
             <AlertCircle className="h-4 w-4 inline mr-2" />
             <span className="block sm:inline">{error}</span>
           </div>
@@ -190,34 +235,47 @@ const HealthPlans: React.FC = () => {
 
         {healthPlan && (
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">Your Personalized Health Plan</h2>
-            
+            <h2 className="text-2xl font-semibold text-blue-700 mb-4">
+              Your Personalized Health Plan
+            </h2>
+
             {healthPlan.diet_plan && healthPlan.diet_plan.macronutrients && (
               <div className="mb-6">
                 <h3 className="text-xl font-semibold text-blue-600 mb-3 flex items-center">
                   <Utensils className="mr-2" /> Diet Plan
                 </h3>
-                <p>Caloric Intake: {healthPlan.diet_plan.caloric_intake} calories</p>
+                <p>
+                  Caloric Intake: {healthPlan.diet_plan.caloric_intake} calories
+                </p>
                 <h4 className="text-lg font-semibold mt-2">Macronutrients:</h4>
                 <ul className="list-disc list-inside text-gray-700">
-                  <li>Carbohydrates: {healthPlan.diet_plan.macronutrients.carbohydrates}</li>
-                  <li>Proteins: {healthPlan.diet_plan.macronutrients.proteins}</li>
+                  <li>
+                    Carbohydrates:{" "}
+                    {healthPlan.diet_plan.macronutrients.carbohydrates}
+                  </li>
+                  <li>
+                    Proteins: {healthPlan.diet_plan.macronutrients.proteins}
+                  </li>
                   <li>Fats: {healthPlan.diet_plan.macronutrients.fats}</li>
                 </ul>
                 <h4 className="text-lg font-semibold mt-2">Meal Plan:</h4>
-                {Object.entries(healthPlan.diet_plan.meal_plan).map(([meal, details]) => (
-                  <div key={meal} className="mt-2">
-                    <h5 className="font-semibold capitalize">{meal} ({details.time}):</h5>
-                    <ul className="list-disc list-inside text-gray-700">
-                      {details.items.map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                {Object.entries(healthPlan.diet_plan.meal_plan).map(
+                  ([meal, details]) => (
+                    <div key={meal} className="mt-2">
+                      <h5 className="font-semibold capitalize">
+                        {meal} ({details.time}):
+                      </h5>
+                      <ul className="list-disc list-inside text-gray-700">
+                        {details.items.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ),
+                )}
               </div>
             )}
-            
+
             {healthPlan.sleep_routine && (
               <div>
                 <h3 className="text-xl font-semibold text-blue-600 mb-3 flex items-center">
@@ -225,11 +283,15 @@ const HealthPlans: React.FC = () => {
                 </h3>
                 <p>Bedtime: {healthPlan.sleep_routine.bedtime}</p>
                 <p>Wake Time: {healthPlan.sleep_routine.wake_time}</p>
-                <h4 className="text-lg font-semibold mt-2">Pre-sleep Activities:</h4>
+                <h4 className="text-lg font-semibold mt-2">
+                  Pre-sleep Activities:
+                </h4>
                 <ul className="list-disc list-inside text-gray-700">
-                  {healthPlan.sleep_routine.pre_sleep_activities.map((activity, index) => (
-                    <li key={index}>{activity}</li>
-                  ))}
+                  {healthPlan.sleep_routine.pre_sleep_activities.map(
+                    (activity, index) => (
+                      <li key={index}>{activity}</li>
+                    ),
+                  )}
                 </ul>
               </div>
             )}

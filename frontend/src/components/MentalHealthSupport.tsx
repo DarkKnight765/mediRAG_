@@ -1,12 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Send, Paperclip, Video, X, User, Bot, Minus, Plus } from 'lucide-react';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Mic,
+  Send,
+  Paperclip,
+  Video,
+  X,
+  User,
+  Bot,
+  Minus,
+  Plus,
+} from "lucide-react";
+import API_BASE_URL from "../api/config";
 
 interface Message {
   id: string;
   text: string;
-  sender: 'user' | 'bot';
+  sender: "user" | "bot";
   timestamp: Date;
-  attachmentType?: 'image' | 'file' | 'audio';
+  attachmentType?: "image" | "file" | "audio";
   attachmentUrl?: string;
 }
 
@@ -19,18 +30,19 @@ interface Particle {
   direction: number;
 }
 
-const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' +
-                  'અઆઇઈઉઊઋએઐઓઔકખગઘઙચછજઝઞટઠડઢણતથદધનપફબભમયરલવશષસહળક્ષજ્ઞ' +
-                  'अआइईउऊऋएऐओऔअंअःकखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहक्षत्रज्ञ' +
-                  'ਅਆਇਈਉਊਏਐਓਔਕਖਗਘਙਚਛਜਝਞਟਠਡਢਣਤਥਦਧਨਪਫਬਭਮਯਰਲਵਸ਼ਸਹਖ਼ਗ਼ਜ਼ਫ਼' +
-                  'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ' +
-                  'అఆఇఈఉఊఋఎఏఐఒఓఔఅంఅఃకఖగఘఙచఛజఝఞటఠడఢణతథదధనపఫబభమయరలవశషసహళక్షజ్ఞ' +
-                  'ಅಆಇಈಉಊಋಎಏಐಒಓಔಅಂಅಃಕಖಗಘಙಚಛಜಝಞಟಠಡಢಣತಥದಧನಪಫಬಭಮಯರಲವಶಷಸಹಳಕ್ಷಜ್ಞ' +
-                  '안녕하세요 세계';
+const alphabets =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" +
+  "અઆઇઈઉઊઋએઐઓઔકખગઘઙચછજઝઞટઠડઢણતથદધનપફબભમયરલવશષસહળક્ષજ્ઞ" +
+  "अआइईउऊऋएऐओऔअंअःकखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहक्षत्रज्ञ" +
+  "ਅਆਇਈਉਊਏਐਓਔਕਖਗਘਙਚਛਜਝਞਟਠਡਢਣਤਥਦਧਨਪਫਬਭਮਯਰਲਵਸ਼ਸਹਖ਼ਗ਼ਜ਼ਫ਼" +
+  "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
+  "అఆఇఈఉఊఋఎఏఐఒఓఔఅంఅఃకఖగఘఙచఛజఝఞటఠడఢణతథదధనపఫబభమయరలవశషసహళక్షజ్ఞ" +
+  "ಅಆಇಈಉಊಋಎಏಐಒಓಔಅಂಅಃಕಖಗಘಙಚಛಜಝಞಟಠಡಢಣತಥದಧನಪಫಬಭಮಯರಲವಶಷಸಹಳಕ್ಷಜ್ಞ" +
+  "안녕하세요 세계";
 
 const MentalHealthSupport: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
@@ -42,14 +54,14 @@ const MentalHealthSupport: React.FC = () => {
   const particlesRef = useRef<Particle[]>([]);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     canvas.width = window.innerWidth;
@@ -63,27 +75,31 @@ const MentalHealthSupport: React.FC = () => {
         char: alphabets[Math.floor(Math.random() * alphabets.length)],
         size: 20 + Math.random() * 20,
         speed: 0.2 + Math.random() * 0.5,
-        direction: Math.random() * Math.PI * 2
+        direction: Math.random() * Math.PI * 2,
       });
     }
     particlesRef.current = particles;
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = 'rgba(128, 0, 128, 0.2)';
-      
-      particles.forEach(particle => {
+      ctx.fillStyle = "rgba(128, 0, 128, 0.2)";
+
+      particles.forEach((particle) => {
         ctx.font = `${particle.size}px Arial`;
         ctx.fillText(particle.char, particle.x, particle.y);
 
-        particle.x += Math.cos(particle.direction) * particle.speed * animationSpeed;
-        particle.y += Math.sin(particle.direction) * particle.speed * animationSpeed;
+        particle.x +=
+          Math.cos(particle.direction) * particle.speed * animationSpeed;
+        particle.y +=
+          Math.sin(particle.direction) * particle.speed * animationSpeed;
 
-        if (particle.x < 0 || particle.x > canvas.width) particle.direction = Math.PI - particle.direction;
-        if (particle.y < 0 || particle.y > canvas.height) particle.direction = -particle.direction;
+        if (particle.x < 0 || particle.x > canvas.width)
+          particle.direction = Math.PI - particle.direction;
+        if (particle.y < 0 || particle.y > canvas.height)
+          particle.direction = -particle.direction;
 
         if (Math.random() < 0.001) {
-          particle.direction += (Math.random() - 0.5) * Math.PI / 4;
+          particle.direction += ((Math.random() - 0.5) * Math.PI) / 4;
         }
       });
 
@@ -97,32 +113,32 @@ const MentalHealthSupport: React.FC = () => {
       canvas.height = window.innerHeight;
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [animationSpeed]);
 
   const sendMessageToBackend = async (message: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/mental-health-chat', {
-        method: 'POST',
+      const response = await fetch(`${API_BASE_URL}/mental-health-chat`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ message }),
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to get response from server');
+        throw new Error("Failed to get response from server");
       }
-      
+
       const data = await response.json();
       return data.response;
     } catch (error) {
-      console.error('Error sending message to backend:', error);
+      console.error("Error sending message to backend:", error);
       return "I'm sorry, I'm having trouble connecting right now. Please try again later.";
     } finally {
       setIsLoading(false);
@@ -134,35 +150,37 @@ const MentalHealthSupport: React.FC = () => {
       const newMessage: Message = {
         id: Date.now().toString(),
         text: input,
-        sender: 'user',
+        sender: "user",
         timestamp: new Date(),
       };
 
       if (selectedFile) {
-        newMessage.attachmentType = selectedFile.type.startsWith('image/') ? 'image' : 'file';
+        newMessage.attachmentType = selectedFile.type.startsWith("image/")
+          ? "image"
+          : "file";
         newMessage.attachmentUrl = URL.createObjectURL(selectedFile);
       }
 
-      setMessages(prevMessages => [...prevMessages, newMessage]);
-      setInput('');
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setInput("");
       setSelectedFile(null);
 
       // Get response from backend
       const botResponse = await sendMessageToBackend(input);
-      
+
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: botResponse,
-        sender: 'bot',
+        sender: "bot",
         timestamp: new Date(),
       };
-      
-      setMessages(prevMessages => [...prevMessages, botMessage]);
+
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -185,7 +203,7 @@ const MentalHealthSupport: React.FC = () => {
   };
 
   const adjustAnimationSpeed = (increment: boolean) => {
-    setAnimationSpeed(prevSpeed => {
+    setAnimationSpeed((prevSpeed) => {
       const newSpeed = increment ? prevSpeed + 0.1 : prevSpeed - 0.1;
       return Math.max(0.1, Math.min(2, newSpeed));
     });
@@ -197,11 +215,17 @@ const MentalHealthSupport: React.FC = () => {
       <div className="bg-purple-600 text-white p-4 relative z-10">
         <h1 className="text-2xl font-bold">Mental Health Support</h1>
         <div className="flex items-center mt-2">
-          <button onClick={() => adjustAnimationSpeed(false)} className="mr-2 p-1 bg-purple-700 rounded">
+          <button
+            onClick={() => adjustAnimationSpeed(false)}
+            className="mr-2 p-1 bg-purple-700 rounded"
+          >
             <Minus size={16} />
           </button>
           <span>Animation Speed: {animationSpeed.toFixed(1)}x</span>
-          <button onClick={() => adjustAnimationSpeed(true)} className="ml-2 p-1 bg-purple-700 rounded">
+          <button
+            onClick={() => adjustAnimationSpeed(true)}
+            className="ml-2 p-1 bg-purple-700 rounded"
+          >
             <Plus size={16} />
           </button>
         </div>
@@ -211,13 +235,17 @@ const MentalHealthSupport: React.FC = () => {
           <div
             key={message.id}
             className={`flex mb-4 ${
-              message.sender === 'user' ? 'justify-end' : 'justify-start'
+              message.sender === "user" ? "justify-end" : "justify-start"
             } animate-fade-in-up`}
             style={{ animationDelay: `${index * 0.1}s` }}
           >
-            <div className={`flex items-end ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-              <div className={`rounded-full p-2 ${message.sender === 'user' ? 'bg-purple-500' : 'bg-gray-300'}`}>
-                {message.sender === 'user' ? (
+            <div
+              className={`flex items-end ${message.sender === "user" ? "flex-row-reverse" : "flex-row"}`}
+            >
+              <div
+                className={`rounded-full p-2 ${message.sender === "user" ? "bg-purple-500" : "bg-gray-300"}`}
+              >
+                {message.sender === "user" ? (
                   <User size={24} className="text-white" />
                 ) : (
                   <Bot size={24} className="text-gray-600" />
@@ -225,19 +253,19 @@ const MentalHealthSupport: React.FC = () => {
               </div>
               <div
                 className={`max-w-xs mx-2 p-3 rounded-lg ${
-                  message.sender === 'user'
-                    ? 'bg-purple-500 text-white'
-                    : 'bg-gray-300 text-gray-800'
+                  message.sender === "user"
+                    ? "bg-purple-500 text-white"
+                    : "bg-gray-300 text-gray-800"
                 } animate-bounce-in`}
               >
-                {message.attachmentType === 'image' && (
+                {message.attachmentType === "image" && (
                   <img
                     src={message.attachmentUrl}
                     alt="Uploaded"
                     className="max-w-xs mb-2 rounded"
                   />
                 )}
-                {message.attachmentType === 'file' && (
+                {message.attachmentType === "file" && (
                   <a
                     href={message.attachmentUrl}
                     target="_blank"
@@ -274,7 +302,9 @@ const MentalHealthSupport: React.FC = () => {
           <button
             onClick={handleRecordAudio}
             className={`p-2 rounded-full transition-colors ${
-              isRecording ? 'bg-red-500 text-white' : 'bg-gray-200 hover:bg-gray-300'
+              isRecording
+                ? "bg-red-500 text-white"
+                : "bg-gray-200 hover:bg-gray-300"
             }`}
           >
             <Mic size={20} />
@@ -299,7 +329,9 @@ const MentalHealthSupport: React.FC = () => {
             onClick={handleSend}
             disabled={isLoading}
             className={`p-2 rounded-full bg-purple-500 text-white transition-colors ${
-              isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-600'
+              isLoading
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-purple-600"
             }`}
           >
             <Send size={20} />
@@ -311,7 +343,10 @@ const MentalHealthSupport: React.FC = () => {
           <div className="bg-white p-4 rounded-lg max-w-3xl w-full">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Relaxation Video</h2>
-              <button onClick={() => setIsVideoOpen(false)} className="text-gray-500 hover:text-gray-700">
+              <button
+                onClick={() => setIsVideoOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <X size={24} />
               </button>
             </div>
@@ -321,6 +356,7 @@ const MentalHealthSupport: React.FC = () => {
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
+                title="Relaxation video"
                 className="w-full h-full"
               ></iframe>
             </div>

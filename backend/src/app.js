@@ -1,12 +1,23 @@
-const express = require('express');
-const cors = require('cors');
-const routes = require('./routes');
+const express = require("express");
+const cors = require("cors");
+const routes = require("./routes");
+const env = require("./config/env");
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || env.corsOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-app.use('/api', routes);
+      return callback(new Error("Not allowed by CORS"));
+    },
+  }),
+);
+app.use(express.json({ limit: "1mb" }));
+
+app.use("/api", routes);
 
 module.exports = app;
