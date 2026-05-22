@@ -82,7 +82,7 @@ graph TD
 
 ### Prerequisites
 
-- Node.js (v22.12 or higher)
+- Node.js (v22.12.0 or higher)
 - npm or yarn
 - Gemini API key
 
@@ -91,7 +91,7 @@ graph TD
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/10vulture1005/medirag.git
+   git clone https://github.com/DarkKnight765/mediRAG_.git
    cd medirag
    ```
 
@@ -136,6 +136,14 @@ graph TD
 
 6. **Access the application**:
    Open your browser and navigate to `http://localhost:3000`
+
+If you prefer to run the full stack via containers (recommended for parity):
+
+```bash
+docker-compose up --build
+```
+
+This will build and start `frontend`, `backend`, and `nginx` as defined in `docker-compose.yml`.
 
 ## 📡 API Endpoints
 
@@ -208,3 +216,22 @@ We welcome contributions to improve MediRAG. Please follow these steps:
 - Gemini for providing the AI models
 - React and Node.js communities for excellent documentation
 - All contributors who have helped improve this project
+
+## 🔎 Current Status
+
+- Core features implemented: AI-powered X-ray analysis, personalized health-plan generator, mental-health chat flow, and in-memory appointment scheduling.
+- Backend: Node.js + Express, AI integration with Gemini; appointments currently stored in-memory (prototype).
+- CI: GitHub Actions added; a temporary workaround (`npm ci --ignore-scripts`) is used for native dependency builds while a durable CI strategy is implemented.
+
+## 🚧 Future Improvements (resume-ready)
+
+- Persist appointments using Prisma + PostgreSQL for durable storage and transactional integrity.
+- Migrate conversation state to per-user session store (Redis) to prevent cross-user leakage and support horizontal scaling.
+- Replace CI `--ignore-scripts` workaround: add native-build runners or prebuilt binaries to support `pdf-img-convert`/`canvas` in CI.
+- Add comprehensive tests (unit, integration, and E2E with Jest, Supertest, and Cypress) and enforce them in CI.
+- Implement authentication and authorization (OAuth2 / JWT) and role-based access control for clinicians and patients.
+- Introduce background workers (BullMQ/Redis) for heavy tasks (PDF conversion, image preprocessing) to improve request latency.
+- Add observability: structured logging, metrics (Prometheus) and error tracking (Sentry) for production readiness.
+- Container orchestration and deployment (Helm + Kubernetes) and automated production CI/CD pipelines.
+- Performance tuning and caching (CDN for static assets, Redis cache for frequent queries).
+- Security & compliance: threat modeling, input sanitization, and HIPAA/GDPR considerations for production data handling.
