@@ -39,6 +39,16 @@ jobs:
           PORT: 3001
         run: node -e "require('./src/app'); console.log('backend app loaded')"
 
+      - name: Run backend integration tests
+        if: matrix.service == 'backend'
+        env:
+          GEMINI_API_KEY: dummy-key
+          PORT: 3001
+        run: |
+          nohup npm run mock-model > mock.log 2>&1 &
+          sleep 1
+          npm run test:integration
+
       - name: Build frontend
         if: matrix.service == 'frontend'
         env:

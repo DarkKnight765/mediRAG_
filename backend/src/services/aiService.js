@@ -48,7 +48,8 @@ async function generateHealthPlan(prompt) {
         axios = null;
       }
       if (axios) {
-        const res = await axios.post(
+        const res = await doPostWithRetry(
+          axios,
           `${localUrl.replace(/\/$/, "")}/generate`,
           { prompt },
         );
@@ -102,10 +103,11 @@ async function chatWithAssistant(conversationHistory) {
       }
       if (axios) {
         const last = history[history.length - 1]?.text || "";
-        const res = await axios.post(`${localUrl.replace(/\/$/, "")}/chat`, {
-          message: last,
-          history,
-        });
+        const res = await doPostWithRetry(
+          axios,
+          `${localUrl.replace(/\/$/, "")}/chat`,
+          { message: last, history },
+        );
         return res.data.text;
       }
     } catch (err) {
@@ -146,7 +148,8 @@ async function testAssistant() {
         axios = null;
       }
       if (axios) {
-        const res = await axios.post(
+        const res = await doPostWithRetry(
+          axios,
           `${localUrl.replace(/\/$/, "")}/generate`,
           { prompt: "What is the capital of France?" },
         );
@@ -186,3 +189,18 @@ module.exports = {
   chatWithAssistant,
   testAssistant,
 };
+
+// Helper: POST with retries and exponential backoff
+async function doPostWithRetry(axios, url, data, retries = 3, backoff = 200) {
+  let attempt = 0;
+  while (attempt <= retries) {
+    try {
+      return await axios.post(url, data, { timeout: 5000 });
+    } catch (err) {
+      attempt += 1;
+      if (attempt > retries) throw err;
+      const delay = backoff * Math.pow(2, attempt - 1);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+}
