@@ -1,4 +1,5 @@
 const fs = require("fs");
+const axios = require("axios");
 const genAI = require("../config/gemini");
 const env = require("../config/env");
 
@@ -30,6 +31,22 @@ async function analyzeImageWithAI(imagePath) {
 }
 
 async function generateHealthPlan(prompt) {
+  // If a local model server is available, call it for development.
+  const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+  if (localUrl) {
+    try {
+      const res = await axios.post(`${localUrl.replace(/\/$/, "")}/generate`, {
+        prompt,
+      });
+      return res.data.text;
+    } catch (err) {
+      console.error(
+        "Local model request failed, falling back to Gemini:",
+        err.message || err,
+      );
+    }
+  }
+
   const model = genAI.getGenerativeModel({
     model: env.modelName,
     systemInstruction:
@@ -45,39 +62,70 @@ async function generateHealthPlan(prompt) {
     },
   });
 
-  // Return the resolved object matching the expected structure of the old OpenAI service as closely as possible,
-  // or return the raw text if the controller gets updated. Returning raw text is better and we'll update the controller.
   return result.response.text();
 }
 
 async function chatWithAssistant(conversationHistory) {
+  // If local model server is configured, call its chat endpoint with the last message
+  const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+  const history = conversationHistory
+    .filter((msg) => msg.role !== "system")
+    .map((msg) => ({
+      role: msg.role === "assistant" ? "model" : "user",
+      text: msg.content,
+    }));
+
+  if (localUrl) {
+    try {
+      const last = history[history.length - 1]?.text || "";
+      const res = await axios.post(`${localUrl.replace(/\/$/, "")}/chat`, {
+        message: last,
+        history,
+      });
+      return res.data.text;
+    } catch (err) {
+      console.error(
+        "Local chat request failed, falling back to Gemini:",
+        err.message || err,
+      );
+    }
+  }
+
   const model = genAI.getGenerativeModel({
     model: env.modelName,
     systemInstruction:
       "You are a helpful mental health assistant. Provide empathetic and supportive responses to users seeking mental health support.",
   });
 
-  // Filter out the 'system' role since Gemini handles it via systemInstruction.
   // Map 'assistant' to 'model' for Gemini compatibility.
-  const history = conversationHistory
-    .filter((msg) => msg.role !== "system")
-    .map((msg) => ({
-      role: msg.role === "assistant" ? "model" : "user",
-      parts: [{ text: msg.content }],
-    }));
+  const chatHistory = history.map((msg) => ({
+    role: msg.role === "model" ? "model" : "user",
+    parts: [{ text: msg.text }],
+  }));
 
-  const chat = model.startChat({
-    history: history.slice(0, -1), // All but the last message is history
-  });
-
-  // The last message is the current user input
-  const lastUserMessage = history[history.length - 1].parts[0].text;
+  const chat = model.startChat({ history: chatHistory.slice(0, -1) });
+  const lastUserMessage = chatHistory[chatHistory.length - 1].parts[0].text;
 
   const result = await chat.sendMessage(lastUserMessage);
   return result.response.text();
 }
 
 async function testAssistant() {
+  const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+  if (localUrl) {
+    try {
+      const res = await axios.post(`${localUrl.replace(/\/$/, "")}/generate`, {
+        prompt: "What is the capital of France?",
+      });
+      return res.data.text;
+    } catch (err) {
+      console.error(
+        "Local model request failed for testAssistant, falling back to Gemini:",
+        err.message || err,
+      );
+    }
+  }
+
   const model = genAI.getGenerativeModel({
     model: env.modelName,
     systemInstruction: "You are a helpful assistant.",
