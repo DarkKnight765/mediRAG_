@@ -50,5 +50,25 @@ services:
     environment:
       - MOCK_MODEL_PORT=8000
 
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=medirag
+      - POSTGRES_PASSWORD=medirag
+      - POSTGRES_DB=medirag
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    environment:
+      - DATABASE_URL=postgres://medirag:medirag@postgres:5432/medirag
+    ports:
+      - "6432:6432"
+    depends_on:
+      - postgres
+
 volumes:
   uploads:

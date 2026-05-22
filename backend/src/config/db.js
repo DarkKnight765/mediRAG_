@@ -1,8 +1,9 @@
-const { PrismaClient } = require('@prisma/client');
-const env = require('./env');
-
+const { PrismaClient } = require("@prisma/client");
+// Initialize PrismaClient; allow overriding the datasource URL via env for runtime configuration.
 const prisma = new PrismaClient({
-    datasourceUrl: process.env.DATABASE_URL
+  datasources: {
+    db: { url: process.env.DATABASE_URL },
+  },
 });
 
 module.exports = prisma;

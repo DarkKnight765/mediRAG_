@@ -10,6 +10,14 @@
     "test:integration": "node test/run_ai_integration_test.js",
     "test:unit": "node test/unit/aiService.unit.js"
   },
+  "scripts-example": {
+    "prisma:migrate:dev": "prisma migrate dev --name init --schema=./prisma/schema.prisma",
+    "prisma:generate": "prisma generate --schema=./prisma/schema.prisma",
+    "prisma:migrate:deploy": "prisma migrate deploy --schema=./prisma/schema.prisma"
+  },
+  "prisma": {
+    "schema": "./prisma/schema.prisma"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
