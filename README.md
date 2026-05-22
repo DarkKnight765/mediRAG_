@@ -217,13 +217,13 @@ We welcome contributions to improve MediRAG. Please follow these steps:
 - React and Node.js communities for excellent documentation
 - All contributors who have helped improve this project
 
-## 🔎 Current Status
+## 🔎 Project Status
 
 - Core features implemented: AI-powered X-ray analysis, personalized health-plan generator, mental-health chat flow, and in-memory appointment scheduling.
 - Backend: Node.js + Express, AI integration with Gemini; appointments currently stored in-memory (prototype).
 - CI: GitHub Actions added; a temporary workaround (`npm ci --ignore-scripts`) is used for native dependency builds while a durable CI strategy is implemented.
 
-## 🚧 Future Improvements (resume-ready)
+## 🚧 Roadmap — Future Improvements
 
 - Persist appointments using Prisma + PostgreSQL for durable storage and transactional integrity.
 - Migrate conversation state to per-user session store (Redis) to prevent cross-user leakage and support horizontal scaling.
