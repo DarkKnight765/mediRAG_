@@ -1,5 +1,5 @@
 const fs = require("fs");
-const axios = require("axios");
+const fs = require("fs");
 const genAI = require("../config/gemini");
 const env = require("../config/env");
 
@@ -14,6 +14,13 @@ function fileToGenerativePart(path, mimeType) {
 }
 
 async function analyzeImageWithAI(imagePath) {
+  // Prefer Gemini for multimodal image analysis. Ensure genAI is available.
+  if (!genAI) {
+    throw new Error(
+      "No multimodal model available for image analysis. Configure LOCAL_MODEL_URL (multimodal) or GEMINI_API_KEY.",
+    );
+  }
+
   // Use gemini-1.5-flash which is multimodal and good for general visual tasks
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -35,16 +42,31 @@ async function generateHealthPlan(prompt) {
   const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
   if (localUrl) {
     try {
-      const res = await axios.post(`${localUrl.replace(/\/$/, "")}/generate`, {
-        prompt,
-      });
-      return res.data.text;
+      let axios;
+      try {
+        axios = require("axios");
+      } catch (e) {
+        axios = null;
+      }
+      if (axios) {
+        const res = await axios.post(
+          `${localUrl.replace(/\/$/, "")}/generate`,
+          { prompt },
+        );
+        return res.data.text;
+      }
     } catch (err) {
       console.error(
         "Local model request failed, falling back to Gemini:",
         err.message || err,
       );
     }
+  }
+
+  if (!genAI) {
+    throw new Error(
+      "No text-generation model configured. Set LOCAL_MODEL_URL or GEMINI_API_KEY.",
+    );
   }
 
   const model = genAI.getGenerativeModel({
@@ -55,11 +77,7 @@ async function generateHealthPlan(prompt) {
 
   const result = await model.generateContent({
     contents: [{ role: "user", parts: [{ text: prompt }] }],
-    generationConfig: {
-      temperature: 0.3,
-      maxOutputTokens: 1000,
-      topP: 1.0,
-    },
+    generationConfig: { temperature: 0.3, maxOutputTokens: 1000, topP: 1.0 },
   });
 
   return result.response.text();
@@ -77,12 +95,20 @@ async function chatWithAssistant(conversationHistory) {
 
   if (localUrl) {
     try {
-      const last = history[history.length - 1]?.text || "";
-      const res = await axios.post(`${localUrl.replace(/\/$/, "")}/chat`, {
-        message: last,
-        history,
-      });
-      return res.data.text;
+      let axios;
+      try {
+        axios = require("axios");
+      } catch (e) {
+        axios = null;
+      }
+      if (axios) {
+        const last = history[history.length - 1]?.text || "";
+        const res = await axios.post(`${localUrl.replace(/\/$/, "")}/chat`, {
+          message: last,
+          history,
+        });
+        return res.data.text;
+      }
     } catch (err) {
       console.error(
         "Local chat request failed, falling back to Gemini:",
@@ -114,10 +140,19 @@ async function testAssistant() {
   const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
   if (localUrl) {
     try {
-      const res = await axios.post(`${localUrl.replace(/\/$/, "")}/generate`, {
-        prompt: "What is the capital of France?",
-      });
-      return res.data.text;
+      let axios;
+      try {
+        axios = require("axios");
+      } catch (e) {
+        axios = null;
+      }
+      if (axios) {
+        const res = await axios.post(
+          `${localUrl.replace(/\/$/, "")}/generate`,
+          { prompt: "What is the capital of France?" },
+        );
+        return res.data.text;
+      }
     } catch (err) {
       console.error(
         "Local model request failed for testAssistant, falling back to Gemini:",
@@ -126,20 +161,21 @@ async function testAssistant() {
     }
   }
 
+  if (!genAI) {
+    throw new Error(
+      "No model available for testAssistant. Set LOCAL_MODEL_URL or GEMINI_API_KEY.",
+    );
+  }
+
   const model = genAI.getGenerativeModel({
     model: env.modelName,
     systemInstruction: "You are a helpful assistant.",
   });
-
   const result = await model.generateContent({
     contents: [
       { role: "user", parts: [{ text: "What is the capital of France?" }] },
     ],
-    generationConfig: {
-      temperature: 0.3,
-      maxOutputTokens: 1000,
-      topP: 1.0,
-    },
+    generationConfig: { temperature: 0.3, maxOutputTokens: 1000, topP: 1.0 },
   });
 
   return result.response.text();

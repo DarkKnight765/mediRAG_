@@ -15,10 +15,12 @@ function requireEnv(name) {
 
 module.exports = {
   port: process.env.PORT || 3001,
-  geminiKey: requireEnv("GEMINI_API_KEY"),
+  // Make GEMINI_API_KEY optional at process startup so CI/smoke checks don't fail.
+  geminiKey: process.env.GEMINI_API_KEY || null,
   modelName: process.env.MODEL_NAME || "gemini-1.5-flash",
   corsOrigins: (process.env.CORS_ORIGIN || defaultCorsOrigins.join(","))
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean),
+  requireEnv,
 };
