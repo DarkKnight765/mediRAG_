@@ -159,22 +159,22 @@ This will build and start `frontend`, `backend`, and `nginx` as defined in `dock
 
 ```mermaid
 flowchart TB
-    A[HomePage] --> B[XrayDiagnosis]
-    A --> C[HealthPlans]
-    A --> D[AppointmentScheduling]
-    A --> E[MentalHealthSupport]
+   Home[Home Page] --> Xray[X-ray Diagnosis]
+   Home --> Health[Health Plans]
+   Home --> Appt[Appointment Scheduling]
+   Home --> Mental[Mental Health Support]
 
-    B -- "Upload Image" --> B1[Backend API]
-    B1 -- "AI Analysis" --> B2[Display Results]
+   Xray --> BackendX[Backend API]
+   BackendX --> Results[Display Results]
 
-    C -- "Submit Health Info" --> C1[Backend API]
-    C1 -- "Generate Plan" --> C2[Display Health Plan]
+   Health --> BackendH[Backend API]
+   BackendH --> Plan[Display Health Plan]
 
-    D -- "Book Appointment" --> D1[Save Appointment]
-    D1 --> D2[Send Confirmation]
+   Appt --> Save[Save Appointment]
+   Save --> Confirm[Send Confirmation]
 
-    E -- "User Message" --> E1[Backend API]
-    E1 -- "AI Response" --> E2[Display Response]
+   Mental --> BackendM[Backend API]
+   BackendM --> Reply[Display Response]
 ```
 
 ## 🧪 Features in Detail

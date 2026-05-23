@@ -1,0 +1,17 @@
+flowchart TB
+    Home[Home Page] --> Xray[X-ray Diagnosis]
+    Home --> Health[Health Plans]
+    Home --> Appt[Appointment Scheduling]
+    Home --> Mental[Mental Health Support]
+
+    Xray --> BackendX[Backend API]
+    BackendX --> Results[Display Results]
+
+    Health --> BackendH[Backend API]
+    BackendH --> Plan[Display Health Plan]
+
+    Appt --> Save[Save Appointment]
+    Save --> Confirm[Send Confirmation]
+
+    Mental --> BackendM[Backend API]
+    BackendM --> Reply[Display Response]
