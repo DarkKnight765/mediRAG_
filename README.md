@@ -16,16 +16,7 @@ The MediRAG platform follows a client-server architecture with AI integration fo
 
 ### System Architecture Diagram
 
-```mermaid
-graph TD
-    A[Frontend - React.js] -->|API Requests| B[Backend - Node.js]
-    B -->|Responses| A
-    B -->|AI Processing| C[Gemini API]
-    C -->|Analysis Results| B
-    B -->|Data Storage| D[(Database)]
-    E[Users] -->|Interacts with| A
-    B -->|Image Processing| F[PDF to Image Conversion]
-```
+![System Architecture Diagram](./diagram2.png)
 
 ## ✨ Key Features
 
@@ -157,25 +148,7 @@ This will build and start `frontend`, `backend`, and `nginx` as defined in `dock
 
 ## 🔄 Component Flow
 
-```mermaid
-flowchart TB
-   Home[Home Page] --> Xray[X-ray Diagnosis]
-   Home --> Health[Health Plans]
-   Home --> Appt[Appointment Scheduling]
-   Home --> Mental[Mental Health Support]
-
-   Xray --> BackendX[Backend API]
-   BackendX --> Results[Display Results]
-
-   Health --> BackendH[Backend API]
-   BackendH --> Plan[Display Health Plan]
-
-   Appt --> Save[Save Appointment]
-   Save --> Confirm[Send Confirmation]
-
-   Mental --> BackendM[Backend API]
-   BackendM --> Reply[Display Response]
-```
+![Component Flow](./diagram.png)
 
 ## 🧪 Features in Detail
 

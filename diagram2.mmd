@@ -1,0 +1,8 @@
+graph TD
+    A[Frontend - React.js] -->|API Requests| B[Backend - Node.js]
+    B -->|Responses| A
+    B -->|AI Processing| C[Gemini API]
+    C -->|Analysis Results| B
+    B -->|Data Storage| D[(Database)]
+    E[Users] -->|Interacts with| A
+    B -->|Image Processing| F[PDF to Image Conversion]
