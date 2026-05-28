@@ -20,8 +20,8 @@ async function analyzeImageWithAI(imagePath) {
     );
   }
 
-  // Use gemini-1.5-flash which is multimodal and good for general visual tasks
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  // Use the configured Gemini model for multimodal image analysis.
+  const model = genAI.getGenerativeModel({ model: env.modelName });
 
   const prompt =
     "You are an expert radiologist analyzing X-ray images. Provide a detailed diagnosis, confidence level, additional findings, and recommended actions. Analyze this X-ray image and provide a detailed diagnosis.";
@@ -84,6 +84,12 @@ async function generateHealthPlan(prompt) {
 }
 
 async function chatWithAssistant(conversationHistory) {
+  if (!genAI) {
+    throw new Error(
+      "Gemini is not configured. Set GEMINI_API_KEY (or GEMINI_API_KEY_FILE) and restart the backend.",
+    );
+  }
+
   // If local model server is configured, call its chat endpoint with the last message
   const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
   const history = conversationHistory

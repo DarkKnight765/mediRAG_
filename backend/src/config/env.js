@@ -1,5 +1,7 @@
+const path = require("path");
 const dotenv = require("dotenv");
-dotenv.config();
+
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const defaultCorsOrigins = ["http://localhost:3000", "http://localhost:8080"];
 
@@ -30,7 +32,7 @@ module.exports = {
     }
     return process.env.GEMINI_API_KEY || null;
   })(),
-  modelName: process.env.MODEL_NAME || "gemini-1.5-flash",
+  modelName: process.env.MODEL_NAME || "gemini-2.0-flash",
   corsOrigins: (process.env.CORS_ORIGIN || defaultCorsOrigins.join(","))
     .split(",")
     .map((origin) => origin.trim())
