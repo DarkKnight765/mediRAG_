@@ -132,14 +132,23 @@ const MentalHealthSupport: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to get response from server");
+        let errorMessage = "Failed to get response from server";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          // Keep the default message if the response is not JSON.
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
       return data.response;
     } catch (error) {
       console.error("Error sending message to backend:", error);
-      return "I'm sorry, I'm having trouble connecting right now. Please try again later.";
+      return error instanceof Error
+        ? error.message
+        : "I'm sorry, I'm having trouble connecting right now. Please try again later.";
     } finally {
       setIsLoading(false);
     }
