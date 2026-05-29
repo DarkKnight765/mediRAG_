@@ -37,6 +37,7 @@ jobs:
         env:
           GEMINI_API_KEY: dummy-key
           PORT: 3001
+          RUNTIME_MODEL_MODE: mock
         run: node -e "require('./src/app'); console.log('backend app loaded')"
 
       - name: Run backend integration tests
@@ -44,6 +45,7 @@ jobs:
         env:
           GEMINI_API_KEY: dummy-key
           PORT: 3001
+          RUNTIME_MODEL_MODE: mock
         run: |
           nohup npm run mock-model > mock.log 2>&1 &
           sleep 1
