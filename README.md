@@ -125,6 +125,19 @@ The MediRAG platform follows a client-server architecture with AI integration fo
    npm start
    ```
 
+6. **(Optional) Use the local mock AI model for development**
+
+If you don't have a Gemini API key or want to develop against a local model, start the mock model server from the `backend` folder:
+
+```bash
+cd backend
+npm run mock-model
+# Then start the backend (which will prefer LOCAL_MODEL_URL when reachable):
+npm run dev
+```
+
+Set `LOCAL_MODEL_URL` in `backend/.env` (or use the provided `.env.example`) to `http://localhost:8000` to point the backend at the mock server.
+
 6. **Access the application**:
    Open your browser and navigate to `http://localhost:3000`
 

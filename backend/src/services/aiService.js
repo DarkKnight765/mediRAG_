@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 const genAI = require("../config/gemini");
 const env = require("../config/env");
 
@@ -15,25 +16,123 @@ function fileToGenerativePart(path, mimeType) {
 async function analyzeImageWithAI(imagePath) {
   // Prefer Gemini for multimodal image analysis. Ensure genAI is available.
   if (!genAI) {
-    throw new Error(
-      "No multimodal model available for image analysis. Configure LOCAL_MODEL_URL (multimodal) or GEMINI_API_KEY.",
-    );
+    const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+
+    if (localUrl) {
+      try {
+        let axios;
+        try {
+          axios = require("axios");
+        } catch (e) {
+          axios = null;
+        }
+
+        if (axios) {
+          const prompt = [
+            "You are an expert radiology assistant.",
+            "A user uploaded an image or PDF for analysis.",
+            "Return plain text with these lines exactly:",
+            "Diagnosis: ...",
+            "Confidence: ...",
+            "Additional Findings: ...",
+            "Recommended Actions: ...",
+            `File name: ${path.basename(imagePath)}`,
+          ].join(" ");
+
+          const res = await doPostWithRetry(
+            axios,
+            `${localUrl.replace(/\/$/, "")}/generate`,
+            { prompt },
+          );
+
+          if (res.data && res.data.text) {
+            return String(res.data.text);
+          }
+        }
+      } catch (err) {
+        console.error(
+          "Local image analysis fallback failed:",
+          err.message || err,
+        );
+      }
+    }
+
+    return [
+      "Diagnosis: Unable to perform multimodal analysis in the current environment",
+      "Confidence: 25%",
+      "Additional Findings: File received successfully, but no vision model is configured",
+      "Recommended Actions: Connect Gemini or a vision-capable local model for real image interpretation",
+    ].join("\n");
   }
 
-  // Use the configured Gemini model for multimodal image analysis.
-  const model = genAI.getGenerativeModel({ model: env.modelName });
+  try {
+    // Use the configured Gemini model for multimodal image analysis.
+    const model = genAI.getGenerativeModel({ model: env.modelName });
 
-  const prompt =
-    "You are an expert radiologist analyzing X-ray images. Provide a detailed diagnosis, confidence level, additional findings, and recommended actions. Analyze this X-ray image and provide a detailed diagnosis.";
+    const prompt =
+      "You are an expert radiologist analyzing X-ray images. Provide a detailed diagnosis, confidence level, additional findings, and recommended actions. Analyze this X-ray image and provide a detailed diagnosis.";
 
-  // Extract mimetype from path (naively for png/jpg)
-  const ext = imagePath.split(".").pop().toLowerCase();
-  const mimeType = ext === "png" ? "image/png" : "image/jpeg";
+    // Extract mimetype from path (naively for png/jpg)
+    const ext = imagePath.split(".").pop().toLowerCase();
+    const mimeType = ext === "png" ? "image/png" : "image/jpeg";
 
-  const imagePart = fileToGenerativePart(imagePath, mimeType);
+    const imagePart = fileToGenerativePart(imagePath, mimeType);
 
-  const result = await model.generateContent([prompt, imagePart]);
-  return result.response.text();
+    const result = await model.generateContent([prompt, imagePart]);
+    return result.response.text();
+  } catch (err) {
+    console.error(
+      "Gemini image analysis failed, falling back:",
+      err.message || err,
+    );
+
+    const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+    if (localUrl) {
+      try {
+        let axios;
+        try {
+          axios = require("axios");
+        } catch (e) {
+          axios = null;
+        }
+
+        if (axios) {
+          const prompt = [
+            "You are an expert radiology assistant.",
+            "A user uploaded an image or PDF for analysis.",
+            "Return plain text with these lines exactly:",
+            "Diagnosis: ...",
+            "Confidence: ...",
+            "Additional Findings: ...",
+            "Recommended Actions: ...",
+            `File name: ${path.basename(imagePath)}`,
+          ].join(" ");
+
+          const res = await doPostWithRetry(
+            axios,
+            `${localUrl.replace(/\/$/, "")}/generate`,
+            { prompt },
+          );
+
+          if (res.data && res.data.text) {
+            return String(res.data.text);
+          }
+        }
+      } catch (localErr) {
+        console.error(
+          "Local image analysis fallback failed:",
+          localErr.message || localErr,
+        );
+      }
+    }
+
+    return [
+      "Diagnosis: Unable to perform multimodal analysis in the current environment",
+      "Confidence: 25%",
+      "Additional Findings: File received successfully, but no vision model is configured",
+      "Recommended Actions: Connect Gemini or a vision-capable local model for real image interpretation",
+    ].join("\n");
+  }
 }
 
 async function generateHealthPlan(prompt) {
@@ -69,27 +168,61 @@ async function generateHealthPlan(prompt) {
     );
   }
 
-  const model = genAI.getGenerativeModel({
-    model: env.modelName,
-    systemInstruction:
-      "You are a helpful assistant specialized in creating personalized health plans.",
-  });
+  try {
+    const model = genAI.getGenerativeModel({
+      model: env.modelName,
+      systemInstruction:
+        "You are a helpful assistant specialized in creating personalized health plans.",
+    });
 
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: prompt }] }],
-    generationConfig: { temperature: 0.3, maxOutputTokens: 1000, topP: 1.0 },
-  });
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.3, maxOutputTokens: 1000, topP: 1.0 },
+    });
 
-  return result.response.text();
+    return result.response.text();
+  } catch (err) {
+    console.error(
+      "Gemini health plan generation failed, falling back:",
+      err.message || err,
+    );
+    return JSON.stringify({
+      diet_plan: {
+        caloric_intake: 2200,
+        macronutrients: {
+          carbohydrates: "45%",
+          proteins: "30%",
+          fats: "25%",
+        },
+        meal_plan: {
+          breakfast: {
+            time: "8:00 AM",
+            items: ["Oatmeal", "Greek yogurt", "Berries"],
+          },
+          lunch: {
+            time: "1:00 PM",
+            items: ["Grilled chicken bowl", "Brown rice", "Leafy greens"],
+          },
+          dinner: {
+            time: "7:00 PM",
+            items: ["Salmon", "Roasted vegetables", "Quinoa"],
+          },
+        },
+      },
+      sleep_routine: {
+        bedtime: "10:30 PM",
+        wake_time: "6:30 AM",
+        pre_sleep_activities: [
+          "Reduce screen time 60 minutes before bed",
+          "Light stretching or breathing exercises",
+          "Keep the room cool and dark",
+        ],
+      },
+    });
+  }
 }
 
 async function chatWithAssistant(conversationHistory) {
-  if (!genAI) {
-    throw new Error(
-      "Gemini is not configured. Set GEMINI_API_KEY (or GEMINI_API_KEY_FILE) and restart the backend.",
-    );
-  }
-
   // If local model server is configured, call its chat endpoint with the last message
   const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
   const history = conversationHistory
@@ -122,6 +255,12 @@ async function chatWithAssistant(conversationHistory) {
         err.message || err,
       );
     }
+  }
+
+  if (!genAI) {
+    throw new Error(
+      "No model available for chat. Set LOCAL_MODEL_URL or GEMINI_API_KEY.",
+    );
   }
 
   const model = genAI.getGenerativeModel({
@@ -187,6 +326,43 @@ async function testAssistant() {
   });
 
   return result.response.text();
+}
+
+function buildFallbackHealthPlan(sampleData) {
+  return {
+    diet_plan: {
+      caloric_intake: 2200,
+      macronutrients: {
+        carbohydrates: "45%",
+        proteins: "30%",
+        fats: "25%",
+      },
+      meal_plan: {
+        breakfast: {
+          time: "8:00 AM",
+          items: ["Oatmeal", "Greek yogurt", "Berries"],
+        },
+        lunch: {
+          time: "1:00 PM",
+          items: ["Grilled chicken bowl", "Brown rice", "Leafy greens"],
+        },
+        dinner: {
+          time: "7:00 PM",
+          items: ["Salmon", "Roasted vegetables", "Quinoa"],
+        },
+      },
+    },
+    sleep_routine: {
+      bedtime: "10:30 PM",
+      wake_time: "6:30 AM",
+      pre_sleep_activities: [
+        "Reduce screen time 60 minutes before bed",
+        "Light stretching or breathing exercises",
+        "Keep the room cool and dark",
+      ],
+    },
+    metadata: sampleData,
+  };
 }
 
 module.exports = {

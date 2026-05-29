@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Upload, AlertCircle, Loader } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowUpRight,
+  CheckCircle2,
+  Loader,
+  Sparkles,
+  Upload,
+} from "lucide-react";
+import API_BASE_URL from "../api/config";
 
 interface DiagnosisResult {
   primaryDiagnosis: string;
@@ -11,10 +19,22 @@ interface DiagnosisResult {
 
 const Alert: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div
-    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+    className="rounded-3xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200"
     role="alert"
   >
     <span className="block sm:inline">{children}</span>
+  </div>
+);
+
+const MetricCard: React.FC<{ label: string; value: string }> = ({
+  label,
+  value,
+}) => (
+  <div className="rounded-3xl border border-white/10 bg-[#0d1723] p-4">
+    <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
+      {label}
+    </div>
+    <div className="mt-2 text-xl font-semibold text-white">{value}</div>
   </div>
 );
 
@@ -38,23 +58,23 @@ const ImageAnalysisPage: React.FC = () => {
     if (file) formData.append("file", file);
 
     try {
-      const response = await fetch(
-        "https://bookish-computing-machine-7vp9jp6g4q94hpgg9-3001.app.github.dev/api/analyze-image",
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
+      const response = await fetch(`${API_BASE_URL}/analyze-image`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (!response.ok) {
-        throw new Error("Server error");
+        const payload = await response.json().catch(() => null);
+        throw new Error(payload?.error || `Server error (${response.status})`);
       }
 
       const data: DiagnosisResult = await response.json();
       setResult(data);
     } catch (err) {
       setError(
-        "An error occurred while processing your request. Please try again.",
+        err instanceof Error
+          ? err.message
+          : "An error occurred while processing your request. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -62,119 +82,161 @@ const ImageAnalysisPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-blue-800 mb-8 text-center">
-          Image and PDF Analysis
-        </h1>
-
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold text-blue-700 mb-4">
-            Upload an Image or PDF for Analysis
-          </h2>
-
-          <div className="flex flex-col items-center justify-center border-2 border-dashed border-blue-300 rounded-lg p-6 hover:border-blue-500 transition duration-300 mb-6">
-            <Upload className="w-12 h-12 text-blue-500 mb-2" />
-            <p className="text-blue-700 font-semibold mb-2">
-              Upload Image or PDF
+    <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+      <main className="space-y-10">
+        <section className="grid gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-300">
+              <Sparkles className="h-4 w-4 text-amber-300" /> Document & image
+              analysis
+            </div>
+            <h1 className="mt-6 text-5xl font-semibold tracking-tight text-white sm:text-6xl">
+              Upload a file and get a clear, premium summary.
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
+              Analyze images or PDFs in the same calm dark theme used across the
+              rest of the app.
             </p>
-            <input
-              type="file"
-              accept="image/*,.pdf"
-              onChange={handleFileUpload}
-              className="hidden"
-              id="file-upload"
-            />
-            <label
-              htmlFor="file-upload"
-              className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-300 cursor-pointer"
-            >
-              Select File
-            </label>
-            {file && <p className="mt-2 text-sm text-gray-600">{file.name}</p>}
           </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={!file || loading}
-            className={`w-full py-3 rounded-full text-white font-semibold ${
-              !file || loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
-            } transition duration-300`}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <Loader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
-                Analyzing...
-              </span>
-            ) : (
-              "Analyze File"
-            )}
-          </button>
-        </div>
-
-        {error && (
-          <Alert>
-            <AlertCircle className="h-4 w-4 inline mr-2" />
-            {error}
-          </Alert>
-        )}
-
-        {result && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">
-              Analysis Results
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-medium text-blue-600">
-                  Primary Diagnosis:
-                </h3>
-                <p className="text-gray-800">{result.primaryDiagnosis}</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-medium text-blue-600">
-                  Confidence Level:
-                </h3>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4 dark:bg-gray-700">
-                  <div
-                    className="bg-blue-600 h-2.5 rounded-full"
-                    style={{ width: `${result.confidenceLevel}%` }}
-                  ></div>
-                </div>
-                <p className="text-gray-800">
-                  {result.confidenceLevel}% confidence
-                </p>
-              </div>
-              <div>
-                <h3 className="text-lg font-medium text-blue-600">
-                  Additional Findings:
-                </h3>
-                <ul className="list-disc list-inside text-gray-800">
-                  {result.additionalFindings.map((finding, index) => (
-                    <li key={index}>{finding}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-medium text-blue-600">
-                  Recommended Actions:
-                </h3>
-                <p className="text-gray-800">{result.recommendedActions}</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-medium text-blue-600">
-                  Detailed AI Analysis:
-                </h3>
-                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
-                  {result.aiAnalysis}
-                </pre>
-              </div>
+          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <MetricCard label="Input" value="Image or PDF" />
+              <MetricCard label="Tone" value="Clear" />
+              <MetricCard label="Result" value="Actionable" />
+              <MetricCard label="Theme" value="Premium" />
             </div>
           </div>
-        )}
-      </div>
+        </section>
+
+        <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+          <section className="rounded-[2rem] border border-white/10 bg-[#0d1723] p-8 shadow-2xl shadow-black/30 backdrop-blur-xl">
+            <h2 className="text-2xl font-semibold text-white">Upload file</h2>
+            <p className="mt-3 text-sm leading-7 text-slate-400">
+              Choose an image or PDF and submit it for analysis.
+            </p>
+
+            <div className="mt-8 flex flex-col items-center justify-center rounded-[1.75rem] border border-dashed border-white/10 bg-white/5 p-6 text-center transition hover:border-amber-300/30 hover:bg-white/10">
+              <Upload className="h-12 w-12 text-amber-300" />
+              <p className="mt-3 text-sm font-semibold text-white">
+                Upload Image or PDF
+              </p>
+              <input
+                type="file"
+                accept="image/*,.pdf"
+                onChange={handleFileUpload}
+                className="hidden"
+                id="file-upload"
+              />
+              <label
+                htmlFor="file-upload"
+                className="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-full bg-amber-300 px-5 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-amber-200"
+              >
+                Select File <ArrowUpRight className="h-4 w-4" />
+              </label>
+              {file && (
+                <p className="mt-3 text-sm text-slate-300">{file.name}</p>
+              )}
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              disabled={!file || loading}
+              className={`mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition ${
+                !file || loading
+                  ? "cursor-not-allowed bg-white/10 text-slate-500"
+                  : "bg-amber-300 text-slate-950 hover:bg-amber-200"
+              }`}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <Loader className="mr-3 h-5 w-5 animate-spin text-slate-950" />
+                  Analyzing...
+                </span>
+              ) : (
+                "Analyze File"
+              )}
+            </button>
+
+            {error && (
+              <div className="mt-6">
+                <Alert>
+                  <AlertCircle className="mr-2 inline h-4 w-4" />
+                  {error}
+                </Alert>
+              </div>
+            )}
+          </section>
+
+          <section className="rounded-[2rem] border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/30 backdrop-blur-xl">
+            <h2 className="text-2xl font-semibold text-white">
+              Analysis results
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-slate-400">
+              Results appear here once the file has been processed.
+            </p>
+
+            {result ? (
+              <div className="mt-8 space-y-4">
+                <div className="rounded-3xl border border-white/10 bg-[#0d1723] p-5">
+                  <h3 className="text-sm uppercase tracking-[0.3em] text-slate-500">
+                    Primary diagnosis
+                  </h3>
+                  <p className="mt-2 text-white">{result.primaryDiagnosis}</p>
+                </div>
+                <div className="rounded-3xl border border-white/10 bg-[#0d1723] p-5">
+                  <h3 className="text-sm uppercase tracking-[0.3em] text-slate-500">
+                    Confidence
+                  </h3>
+                  <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-white/10">
+                    <div
+                      className="h-full rounded-full bg-amber-300"
+                      style={{ width: `${result.confidenceLevel}%` }}
+                    />
+                  </div>
+                  <p className="mt-3 text-sm text-slate-300">
+                    {result.confidenceLevel}% confidence
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-white/10 bg-[#0d1723] p-5">
+                  <h3 className="text-sm uppercase tracking-[0.3em] text-slate-500">
+                    Additional findings
+                  </h3>
+                  <ul className="mt-3 space-y-2 text-sm text-slate-300">
+                    {result.additionalFindings.map((finding, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-300" />
+                        <span>{finding}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="rounded-3xl border border-white/10 bg-[#0d1723] p-5">
+                  <h3 className="text-sm uppercase tracking-[0.3em] text-slate-500">
+                    Recommended actions
+                  </h3>
+                  <p className="mt-2 text-sm leading-7 text-slate-300">
+                    {result.recommendedActions}
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-white/10 bg-[#0d1723] p-5">
+                  <h3 className="text-sm uppercase tracking-[0.3em] text-slate-500">
+                    Detailed AI analysis
+                  </h3>
+                  <pre className="mt-3 overflow-x-auto whitespace-pre-wrap rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-300">
+                    {result.aiAnalysis}
+                  </pre>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-8 rounded-[1.75rem] border border-dashed border-white/10 bg-[#0d1723] p-8 text-sm leading-7 text-slate-400">
+                No file analyzed yet. Upload one to see the premium themed
+                result view here.
+              </div>
+            )}
+          </section>
+        </div>
+      </main>
     </div>
   );
 };
