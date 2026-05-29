@@ -51,7 +51,7 @@ const ServicesPage: React.FC = () => {
             <Sparkles className="h-4 w-4 text-amber-300" /> Core services
           </div>
           <h1 className="mt-6 text-5xl font-semibold tracking-tight text-white sm:text-6xl">
-            Services built to feel premium and easy to act on.
+            Core healthcare services in one connected platform.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
             Every service is presented like part of one connected journey — less
@@ -63,14 +63,14 @@ const ServicesPage: React.FC = () => {
           <div className="flex items-center gap-3 text-amber-300">
             <ShieldCheck className="h-5 w-5" />
             <span className="text-sm font-semibold uppercase tracking-[0.3em]">
-              Designed for trust
+              Built for patient trust
             </span>
           </div>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <MiniMetric value="4" label="Primary paths" />
             <MiniMetric value="24/7" label="Support access" />
             <MiniMetric value="1" label="Connected system" />
-            <MiniMetric value="Fast" label="Action-focused UX" />
+            <MiniMetric value="Clear" label="Clinical next steps" />
           </div>
         </div>
       </section>

@@ -18,18 +18,18 @@ exports.analyzeImage = async (req, res) => {
       // Delete the original PDF file
       fs.unlinkSync(req.file.path);
     } else if (![".png", ".jpg", ".jpeg"].includes(fileExtension)) {
-      return res
-        .status(400)
-        .json({
-          error: "Unsupported file format. Please upload a PDF or image file.",
-        });
+      return res.status(400).json({
+        error: "Unsupported file format. Please upload a PDF or image file.",
+      });
     }
 
     const aiAnalysis = await aiService.analyzeImageWithAI(imagePath);
     const diagnosisResult = parseAIResponse(aiAnalysis);
 
     // Clean up the uploaded file
-    fs.unlinkSync(imagePath);
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
 
     res.json({
       ...diagnosisResult,

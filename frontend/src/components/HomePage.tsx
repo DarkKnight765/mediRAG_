@@ -12,26 +12,26 @@ import {
 const quickLinks = [
   {
     icon: FileText,
-    title: "Diagnosis",
-    text: "X-ray and document analysis",
+    title: "Imaging Review",
+    text: "AI-assisted X-ray and clinical document insights",
     to: "/xray-diagnosis",
   },
   {
     icon: Target,
-    title: "Plans",
-    text: "Personalized health plans",
+    title: "Care Plans",
+    text: "Nutrition and sleep plans tailored to patient profile",
     to: "/health-plans",
   },
   {
     icon: CalendarDays,
     title: "Appointments",
-    text: "Book care in a few steps",
+    text: "Schedule follow-up care with guided intake",
     to: "/appointments",
   },
   {
     icon: Brain,
-    title: "AI Support",
-    text: "Calm guided conversation",
+    title: "Behavioral Support",
+    text: "Supportive check-ins with risk-aware guidance",
     to: "/mental-health",
   },
 ];
@@ -45,11 +45,12 @@ const HomePage: React.FC = () => {
             <Sparkles className="h-4 w-4 text-amber-300" /> MediRAG
           </div>
           <h1 className="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
-            One home page. Separate pages for everything else.
+            Your digital front door to connected healthcare.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-            Use the homepage to orient visitors, then send them to dedicated
-            pages for services, plans, appointments, and AI support.
+            From symptom support to imaging review, personalized plans, and
+            appointments, MediRAG helps patients move from concern to next
+            clinical step with clarity.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
@@ -70,7 +71,7 @@ const HomePage: React.FC = () => {
 
         <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl">
           <p className="text-sm uppercase tracking-[0.35em] text-slate-400">
-            Separate pages
+            Care pathways
           </p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {quickLinks.map((item) => {

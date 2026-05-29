@@ -89,11 +89,11 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   MediRAG
                 </p>
                 <h3 className="mt-4 max-w-2xl text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                  A calm, modern healthcare experience designed to feel premium.
+                  Practical digital healthcare for patients and care teams.
                 </h3>
                 <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300">
-                  Access diagnostics, health planning, appointments, and guided
-                  support in one elegant place.
+                  Access imaging support, care plans, appointment booking, and
+                  behavioral check-ins in one connected platform.
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-3">
@@ -144,8 +144,8 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 </div>
 
                 <p className="mt-4 text-sm leading-7 text-slate-300">
-                  Built for clarity, confidence, and quick next steps — with a
-                  premium look that stays easy to use.
+                  Built for clarity, reliable triage guidance, and clear next
+                  actions for follow-up care.
                 </p>
 
                 <div className="mt-6 space-y-3">

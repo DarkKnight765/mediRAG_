@@ -8,6 +8,7 @@ import {
   Upload,
 } from "lucide-react";
 import API_BASE_URL from "../api/config";
+import { alertPanelClass } from "./ui/formTheme";
 
 interface DiagnosisResult {
   primaryDiagnosis: string;
@@ -18,10 +19,7 @@ interface DiagnosisResult {
 }
 
 const Alert: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div
-    className="rounded-3xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200"
-    role="alert"
-  >
+  <div className={alertPanelClass} role="alert">
     <span className="block sm:inline">{children}</span>
   </div>
 );
@@ -91,11 +89,11 @@ const ImageAnalysisPage: React.FC = () => {
               analysis
             </div>
             <h1 className="mt-6 text-5xl font-semibold tracking-tight text-white sm:text-6xl">
-              Upload a file and get a clear, premium summary.
+              Upload a scan and receive a structured clinical summary.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
-              Analyze images or PDFs in the same calm dark theme used across the
-              rest of the app.
+              Submit medical images or PDFs for AI-assisted review, confidence
+              scoring, and recommended follow-up actions.
             </p>
           </div>
 
@@ -104,7 +102,7 @@ const ImageAnalysisPage: React.FC = () => {
               <MetricCard label="Input" value="Image or PDF" />
               <MetricCard label="Tone" value="Clear" />
               <MetricCard label="Result" value="Actionable" />
-              <MetricCard label="Theme" value="Premium" />
+              <MetricCard label="Output" value="Structured" />
             </div>
           </div>
         </section>
@@ -230,8 +228,8 @@ const ImageAnalysisPage: React.FC = () => {
               </div>
             ) : (
               <div className="mt-8 rounded-[1.75rem] border border-dashed border-white/10 bg-[#0d1723] p-8 text-sm leading-7 text-slate-400">
-                No file analyzed yet. Upload one to see the premium themed
-                result view here.
+                No file analyzed yet. Upload an image or PDF to view findings,
+                confidence level, and recommended next actions.
               </div>
             )}
           </section>

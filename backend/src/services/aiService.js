@@ -137,6 +137,8 @@ async function analyzeImageWithAI(imagePath) {
 }
 
 async function generateHealthPlan(prompt) {
+  const fallbackPlan = buildFallbackHealthPlan({ source: "fallback" });
+
   // If a local model server is available, call it for development.
   const runtime = require("../config/runtime");
   const localUrl = runtime.getLocalModelUrl();
@@ -154,7 +156,9 @@ async function generateHealthPlan(prompt) {
           `${localUrl.replace(/\/$/, "")}/generate`,
           { prompt },
         );
-        return res.data.text;
+        if (res && res.data && typeof res.data.text === "string") {
+          return res.data.text;
+        }
       }
     } catch (err) {
       console.error(
@@ -165,9 +169,7 @@ async function generateHealthPlan(prompt) {
   }
 
   if (!genAI) {
-    throw new Error(
-      "No text-generation model configured. Set LOCAL_MODEL_URL or GEMINI_API_KEY.",
-    );
+    return JSON.stringify(fallbackPlan);
   }
 
   try {
@@ -188,39 +190,7 @@ async function generateHealthPlan(prompt) {
       "Gemini health plan generation failed, falling back:",
       err.message || err,
     );
-    return JSON.stringify({
-      diet_plan: {
-        caloric_intake: 2200,
-        macronutrients: {
-          carbohydrates: "45%",
-          proteins: "30%",
-          fats: "25%",
-        },
-        meal_plan: {
-          breakfast: {
-            time: "8:00 AM",
-            items: ["Oatmeal", "Greek yogurt", "Berries"],
-          },
-          lunch: {
-            time: "1:00 PM",
-            items: ["Grilled chicken bowl", "Brown rice", "Leafy greens"],
-          },
-          dinner: {
-            time: "7:00 PM",
-            items: ["Salmon", "Roasted vegetables", "Quinoa"],
-          },
-        },
-      },
-      sleep_routine: {
-        bedtime: "10:30 PM",
-        wake_time: "6:30 AM",
-        pre_sleep_activities: [
-          "Reduce screen time 60 minutes before bed",
-          "Light stretching or breathing exercises",
-          "Keep the room cool and dark",
-        ],
-      },
-    });
+    return JSON.stringify(fallbackPlan);
   }
 }
 
