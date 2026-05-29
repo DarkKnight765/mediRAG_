@@ -33,6 +33,7 @@ const MentalHealthSupport: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMockMode, setIsMockMode] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
   const sendMessageToBackend = async (message: string) => {
     setIsLoading(true);
@@ -68,6 +69,21 @@ const MentalHealthSupport: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    // Auto-scroll to bottom when messages change
+    if (messagesContainerRef.current) {
+      try {
+        messagesContainerRef.current.scrollTo({
+          top: messagesContainerRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      } catch (e) {
+        // fallback
+        messagesContainerRef.current.scrollTop =
+          messagesContainerRef.current.scrollHeight;
+      }
+    }
+  }, [messages]);
   useEffect(() => {
     let cancelled = false;
     (async () => {

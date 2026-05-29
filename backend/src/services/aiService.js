@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const genAI = require("../config/gemini");
 const env = require("../config/env");
+const runtime = require("../config/runtime");
 
 // Helper to convert local image to Gemini inline data
 function fileToGenerativePart(path, mimeType) {
@@ -16,7 +17,7 @@ function fileToGenerativePart(path, mimeType) {
 async function analyzeImageWithAI(imagePath) {
   // Prefer Gemini for multimodal image analysis. Ensure genAI is available.
   if (!genAI) {
-    const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+    const localUrl = runtime.getLocalModelUrl();
 
     if (localUrl) {
       try {
@@ -86,7 +87,7 @@ async function analyzeImageWithAI(imagePath) {
       err.message || err,
     );
 
-    const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+    const localUrl = runtime.getLocalModelUrl();
     if (localUrl) {
       try {
         let axios;
@@ -137,7 +138,8 @@ async function analyzeImageWithAI(imagePath) {
 
 async function generateHealthPlan(prompt) {
   // If a local model server is available, call it for development.
-  const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+  const runtime = require("../config/runtime");
+  const localUrl = runtime.getLocalModelUrl();
   if (localUrl) {
     try {
       let axios;
@@ -224,7 +226,8 @@ async function generateHealthPlan(prompt) {
 
 async function chatWithAssistant(conversationHistory) {
   // If local model server is configured, call its chat endpoint with the last message
-  const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+  const runtime = require("../config/runtime");
+  const localUrl = runtime.getLocalModelUrl();
   const history = conversationHistory
     .filter((msg) => msg.role !== "system")
     .map((msg) => ({
@@ -283,7 +286,7 @@ async function chatWithAssistant(conversationHistory) {
 }
 
 async function testAssistant() {
-  const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+  const localUrl = runtime.getLocalModelUrl();
   if (localUrl) {
     try {
       let axios;
