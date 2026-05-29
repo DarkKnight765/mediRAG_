@@ -12,6 +12,11 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+import {
+  fieldInputClass,
+  fieldLabelClass,
+  fieldTextareaClass,
+} from "./ui/formTheme";
 
 const ContactPage: React.FC = () => {
   return (
@@ -23,11 +28,11 @@ const ContactPage: React.FC = () => {
           </div>
 
           <h1 className="mt-6 max-w-2xl text-5xl font-semibold tracking-tight text-white sm:text-6xl">
-            Let’s make every next step feel easier.
+            Contact clinical operations and support.
           </h1>
           <p className="mt-5 max-w-xl text-sm leading-7 text-slate-300">
-            Reach out for demos, support, scheduling questions, or help finding
-            the right care path.
+            Reach out for onboarding, technical support, scheduling issues, or
+            guidance on the correct service pathway.
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -62,7 +67,7 @@ const ContactPage: React.FC = () => {
                 response window
               </div>
               <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200">
-                <Clock3 className="h-4 w-4 text-cyan-300" /> Calm, clear
+                <Clock3 className="h-4 w-4 text-cyan-300" /> Calm, clear case
                 follow-up
               </div>
             </div>
@@ -93,7 +98,7 @@ const ContactPage: React.FC = () => {
           <div className="mt-6 rounded-[1.75rem] border border-white/10 bg-white/5 p-5">
             <div className="flex items-center gap-3 text-sm text-slate-200">
               <LifeBuoy className="h-4 w-4 text-amber-300" />
-              Designed for fast triage and friendly support.
+              Requests are triaged to the correct team for faster resolution.
             </div>
           </div>
 
@@ -143,20 +148,18 @@ const Field: React.FC<{
   as?: "input" | "textarea";
 }> = ({ label, placeholder, type = "text", as = "input" }) => (
   <label className="block">
-    <span className="mb-2 block text-sm font-medium text-slate-200">
-      {label}
-    </span>
+    <span className={fieldLabelClass}>{label}</span>
     {as === "textarea" ? (
       <textarea
         placeholder={placeholder}
         rows={5}
-        className="w-full rounded-[1.25rem] border border-white/10 bg-[#0d1723] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-amber-300/40 focus:bg-white/10"
+        className={fieldTextareaClass}
       />
     ) : (
       <input
         type={type}
         placeholder={placeholder}
-        className="w-full rounded-[1.25rem] border border-white/10 bg-[#0d1723] px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-amber-300/40 focus:bg-white/10"
+        className={fieldInputClass}
       />
     )}
   </label>

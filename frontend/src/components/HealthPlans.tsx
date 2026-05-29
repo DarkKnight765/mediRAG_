@@ -3,12 +3,19 @@ import {
   AlertCircle,
   ArrowUpRight,
   CheckCircle2,
-  ChevronDown,
   Moon,
   Sparkles,
   Utensils,
 } from "lucide-react";
 import API_BASE_URL from "../api/config";
+import {
+  alertPanelClass,
+  fieldInputClass,
+  fieldLabelClass,
+  fieldOptionClass,
+  fieldSelectClass,
+  fieldTextareaClass,
+} from "./ui/formTheme";
 
 interface HealthPlanData {
   diet_plan: {
@@ -157,29 +164,40 @@ const HealthPlans: React.FC = () => {
               />
 
               <div>
-                <label
-                  htmlFor="activityLevel"
-                  className="block text-sm font-medium text-slate-200"
-                >
+                <label htmlFor="activityLevel" className={fieldLabelClass}>
                   Activity Level
                 </label>
-                <div className="relative mt-1">
+                <div className="relative">
                   <select
                     id="activityLevel"
                     name="activityLevel"
                     value={formData.activityLevel}
                     onChange={handleInputChange}
-                    className="block w-full appearance-none rounded-[1.25rem] border border-white/10 bg-[#0d1723] px-4 py-3 pr-11 text-sm text-white outline-none transition focus:border-amber-300/40 focus:bg-white/10"
+                    className={fieldSelectClass}
                     required
                   >
-                    <option value="">Select an option</option>
-                    <option value="sedentary">Sedentary</option>
-                    <option value="lightly active">Lightly Active</option>
-                    <option value="moderately active">Moderately Active</option>
-                    <option value="very active">Very Active</option>
-                    <option value="extra active">Extra Active</option>
+                    <option value="" className="bg-[#0b1320] text-slate-400">
+                      Select activity level
+                    </option>
+                    <option value="sedentary" className={fieldOptionClass}>
+                      Sedentary
+                    </option>
+                    <option value="lightly active" className={fieldOptionClass}>
+                      Lightly Active
+                    </option>
+                    <option
+                      value="moderately active"
+                      className={fieldOptionClass}
+                    >
+                      Moderately Active
+                    </option>
+                    <option value="very active" className={fieldOptionClass}>
+                      Very Active
+                    </option>
+                    <option value="extra active" className={fieldOptionClass}>
+                      Extra Active
+                    </option>
                   </select>
-                  <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 </div>
               </div>
 
@@ -193,10 +211,7 @@ const HealthPlans: React.FC = () => {
               />
 
               <div>
-                <label
-                  htmlFor="sleepIssues"
-                  className="block text-sm font-medium text-slate-200"
-                >
+                <label htmlFor="sleepIssues" className={fieldLabelClass}>
                   Sleep Issues
                 </label>
                 <textarea
@@ -204,7 +219,7 @@ const HealthPlans: React.FC = () => {
                   name="sleepIssues"
                   value={formData.sleepIssues}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-[1.25rem] border border-white/10 bg-[#0d1723] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-amber-300/40 focus:bg-white/10"
+                  className={fieldTextareaClass}
                   rows={3}
                   placeholder="Describe any sleep issues you're experiencing"
                 />
@@ -245,10 +260,7 @@ const HealthPlans: React.FC = () => {
             </div>
 
             {error && (
-              <div
-                className="rounded-3xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200"
-                role="alert"
-              >
+              <div className={alertPanelClass} role="alert">
                 <AlertCircle className="mr-2 inline h-4 w-4" />
                 <span className="block sm:inline">{error}</span>
               </div>
@@ -384,7 +396,7 @@ const Field: React.FC<{
   placeholder,
 }) => (
   <div>
-    <label htmlFor={name} className="block text-sm font-medium text-slate-200">
+    <label htmlFor={name} className={fieldLabelClass}>
       {label}
     </label>
     <input
@@ -398,7 +410,7 @@ const Field: React.FC<{
       max={max}
       step={step}
       placeholder={placeholder}
-      className="mt-1 block w-full rounded-[1.25rem] border border-white/10 bg-[#0d1723] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-amber-300/40 focus:bg-white/10"
+      className={fieldInputClass}
     />
   </div>
 );

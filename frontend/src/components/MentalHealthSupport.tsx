@@ -14,6 +14,12 @@ import {
   X,
 } from "lucide-react";
 import API_BASE_URL from "../api/config";
+import {
+  dialogOverlayClass,
+  dialogPanelClass,
+  fieldOptionClass,
+  fieldSelectClass,
+} from "./ui/formTheme";
 
 interface Message {
   id: string;
@@ -208,18 +214,19 @@ const MentalHealthSupport: React.FC = () => {
             Atlas support
           </div>
           <h1 className="mt-5 text-3xl font-semibold text-white">
-            A calmer way to start the conversation.
+            Behavioral health check-in and guidance.
           </h1>
           <p className="mt-4 text-sm leading-7 text-slate-300">
-            Ask about stress, routines, sleep, or how to take the next step. The
-            assistant keeps the experience warm, concise, and supportive.
+            Use this channel to discuss stress, sleep, mood, and next-step
+            planning. Responses are designed for practical support and safe
+            escalation language.
           </p>
 
           <div className="mt-6 space-y-3">
             {[
-              "Gentle, low-friction chat UI",
-              "Helpful prompts for getting started",
-              "File, audio, and video support actions",
+              "Structured prompts for symptom check-ins",
+              "Clear next-step suggestions",
+              "Attachment and voice input support",
             ].map((item) => (
               <div
                 key={item}
@@ -234,13 +241,13 @@ const MentalHealthSupport: React.FC = () => {
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
             <InfoCard
               icon={Brain}
-              title="Mood check"
-              description="Start with a single sentence about how today feels."
+              title="Mood snapshot"
+              description="Start with your current concern and recent symptoms."
             />
             <InfoCard
               icon={CalendarDays}
-              title="Next step"
-              description="Move into scheduling or health planning when ready."
+              title="Care pathway"
+              description="Move to appointment booking or plan generation when needed."
             />
           </div>
         </aside>
@@ -272,11 +279,17 @@ const MentalHealthSupport: React.FC = () => {
                 <select
                   value={runtimeMode || "auto"}
                   onChange={(e) => setMode(e.target.value as any)}
-                  className="rounded-md bg-[#0b1320] border border-white/10 text-sm text-white px-2 py-1"
+                  className={`${fieldSelectClass} w-[8rem] rounded-md py-1.5 pr-8`}
                 >
-                  <option value="auto">Auto</option>
-                  <option value="mock">Mock</option>
-                  <option value="gemini">Gemini</option>
+                  <option value="auto" className={fieldOptionClass}>
+                    Auto
+                  </option>
+                  <option value="mock" className={fieldOptionClass}>
+                    Mock
+                  </option>
+                  <option value="gemini" className={fieldOptionClass}>
+                    Gemini
+                  </option>
                 </select>
               </div>
             </div>
@@ -285,9 +298,9 @@ const MentalHealthSupport: React.FC = () => {
           <div className="flex flex-wrap gap-3 border-b border-white/10 px-6 py-4">
             {[
               "Feeling overwhelmed",
-              "Need a quick reset",
+              "Need a short grounding exercise",
               "Talk about sleep",
-              "Plan my next step",
+              "Plan next clinical step",
             ].map((prompt) => (
               <button
                 key={prompt}
@@ -399,7 +412,7 @@ const MentalHealthSupport: React.FC = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  placeholder="Describe how you're feeling..."
+                  placeholder="Describe your concern, symptoms, or what support you need..."
                   className="min-h-[52px] w-full resize-none bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none"
                   rows={1}
                 />
@@ -435,8 +448,8 @@ const MentalHealthSupport: React.FC = () => {
         </section>
       </div>
       {isVideoOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
-          <div className="w-full max-w-3xl rounded-[2rem] border border-white/10 bg-[#0b1320] p-4 shadow-2xl shadow-black/50">
+        <div className={dialogOverlayClass}>
+          <div className={dialogPanelClass}>
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-xl font-semibold text-white">
                 Relaxation Video

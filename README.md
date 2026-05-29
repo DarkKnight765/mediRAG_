@@ -1,223 +1,190 @@
-# MediRAG - Intelligent Healthcare Solutions 🏥✨
+# MediRAG
 
-![MediRAG Banner](./Images/Home.png)
+MediRAG is a healthcare workflow app for patient-facing AI assistance, structured health planning, image/document review, appointment intake, and behavioral support. The current UI uses a dark clinical theme with shared form styling across all pages.
 
-## 📋 Overview
+## Overview
 
-MediRAG is a comprehensive healthcare platform that leverages artificial intelligence to provide accessible, personalized healthcare solutions. Built with modern web technologies including JavaScript, TypeScript, and Node.js, it aims to revolutionize patient care, streamline medical processes, and provide easy access to health-related information and services.
+The platform is split into a React frontend and Node.js backend with runtime model switching:
 
-> 💡 **Vision**: Making quality healthcare accessible through intelligent technology integration
+- `auto` mode prefers local model access when available
+- `mock` mode forces deterministic local responses for development and CI
+- `gemini` mode uses Google Gemini when quota and billing are available
 
-## 🏗️ Healthcare Application Architecture
+The backend also exposes health and mode endpoints so the UI can show current model status and allow switching at runtime.
 
-The MediRAG platform follows a client-server architecture with AI integration for advanced healthcare features.
+## Current UI
 
-![MediRAG Architecture](./Images/MediRAG.png)
+The current product pages are:
 
-### System Architecture Diagram
+- Home
+- Services
+- Health Plans
+- Appointment Booking
+- Mental Health Support
+- Image / X-ray Diagnosis
+- About
+- Contact
 
-![System Architecture Diagram](./diagram2.png)
+All input surfaces use a shared dark form system for consistency.
 
-## ✨ Key Features
+## Screenshots
 
-### 🔍 X-ray and Document Diagnosis
+### Home
 
-- AI-powered analysis of medical images and documents
-- Quick and accurate diagnoses with confidence levels
-- Support for various file formats including images and PDFs
-- Detailed analysis reports with recommendations
+![Home screen](./Images/Home-new.png)
 
-![X-ray Analysis](./Images/X-ray.png)
+### X-ray Diagnosis
 
-### 🥗 Personalized Health Plans
+![X-ray diagnosis screen](./Images/Xray-new.png)
 
-- Tailored nutrition recommendations based on individual profiles
-- Custom sleep routines addressing specific sleep issues
-- Personalized caloric intake and macronutrient distribution
-- Daily meal plans with timing suggestions
+### Health Plans
 
-![Health Plans](./Images/image.png)
+![Health plans screen](./Images/HealthPlans-new.png)
 
-### 📅 Appointment Scheduling
+### Appointments
 
-- Intuitive interface for booking medical appointments
-- Selection from various healthcare professionals
-- Customizable appointment types and reasons
-- Automatic email confirmations and reminders
+![Appointment booking screen](./Images/Appointments-new.png)
 
-![Appointment Scheduling](./Images/Appointment.png)
-![Email Confirmation](./Images/Email.png)
+### Mental Health Support
 
-### 🧠 Mental Health Support
+![Mental health support screen](./Images/MentalHealth-new.png)
 
-- 24/7 access to AI-assisted mental health resources
-- Interactive chatbot with empathetic responses
-- Integration with professional support services
-- Relaxation exercises and resources
+### Contact
 
-![Mental Health Chatbot](./Images/Chatbot.png)
+![Contact screen](./Images/Contact-new.png)
 
-## 🛠️ Technology Stack
+## Architecture
 
-| Layer               | Technologies                       |
-| ------------------- | ---------------------------------- |
-| **Frontend**        | React.js, TypeScript, Tailwind CSS |
-| **Backend**         | Node.js, Express                   |
-| **AI Integration**  | Gemini API                         |
-| **File Processing** | Multer, pdf-img-convert            |
-| **Styling**         | Tailwind CSS, Lucide React (icons) |
-| **Routing**         | React Router                       |
-| **HTTP Requests**   | Axios                              |
+```mermaid
+flowchart LR
+  U[User] --> F[React Frontend]
+  F --> B[Express Backend]
+  B --> M[Runtime model switch]
+  M --> G[Gemini]
+  M --> L[Local mock model]
+  L --> O[Optional Ollama proxy]
+  B --> DB[(PostgreSQL)]
+```
 
-## 🚀 Setup Instructions
+## Tech Stack
 
-### Prerequisites
+| Layer           | Technologies                                     |
+| --------------- | ------------------------------------------------ |
+| Frontend        | React, TypeScript, React Router, Tailwind CSS    |
+| Backend         | Node.js, Express                                 |
+| AI              | Gemini, local mock server, optional Ollama proxy |
+| File processing | Multer, pdf-img-convert                          |
+| HTTP            | Axios                                            |
+| UI icons        | Lucide React                                     |
 
-- Node.js (v22.12.0 or higher)
-- npm or yarn
-- Gemini API key
+## Key Features
 
-### Installation
+### Image and document review
 
-1. **Clone the repository**:
+- Upload X-ray images or PDFs
+- Receive structured findings with confidence and next steps
+- Works in Gemini mode or local mock mode for development
 
-   ```bash
-   git clone https://github.com/DarkKnight765/mediRAG_.git
-   cd medirag
-   ```
+### Health plans
 
-2. **Setup the backend**:
+- Collect age, weight, height, activity level, dietary restrictions, and sleep concerns
+- Generate diet and sleep guidance
+- Server-side restriction guardrails prevent incompatible food suggestions from being returned
 
-   ```bash
-   cd backend
-   npm install
-   ```
+### Appointment booking
 
-3. **Setup the frontend**:
+- Book a medical appointment with clinician and visit type selection
+- Capture reason, symptoms, and medical history
+- Confirmation UI keeps the flow clear and consistent
 
-   ```bash
-   cd ../frontend
-   npm install
-   ```
+### Mental health support
 
-4. **Configure environment variables**:
-   Create a `.env` file in the backend directory with:
+- Chat-based support with runtime mode control
+- Auto-scroll to newest response
+- Uses the same visual language as the rest of the app
 
-   ```
-   PORT=3001
-   GEMINI_API_KEY=YOUR_GEMINI_API_KEY
-   DATABASE_URL=YOUR_DATABASE_CONNECTION_STRING
-   ```
+## Environment Variables
 
-5. **Start the development servers**:
+Create `backend/.env` with values like:
 
-   For backend:
+```env
+DATABASE_URL=postgres://medirag:medirag@localhost:5432/medirag
+GEMINI_API_KEY=your_key_here
+GEMINI_API_KEY_FILE=
+LOCAL_MODEL_URL=http://localhost:8000
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2:3b
+MODEL_NAME=gemini-2.0-flash
+PORT=3001
+```
 
-   ```bash
-   cd backend
-   npm run dev
-   ```
+Notes:
 
-   For frontend:
+- `GEMINI_API_KEY` is optional at startup, but required for Gemini mode to work.
+- `LOCAL_MODEL_URL` points the backend to the local mock server.
+- `OLLAMA_BASE_URL` and `OLLAMA_MODEL` are optional and let the mock server proxy to Ollama when available.
 
-   ```bash
-   cd frontend
-   npm start
-   ```
+## Run Locally
 
-6. **(Optional) Use the local mock AI model for development**
-
-If you don't have a Gemini API key or want to develop against a local model, start the mock model server from the `backend` folder:
+### Backend
 
 ```bash
 cd backend
+npm install
 npm run mock-model
-# Then start the backend (which will prefer LOCAL_MODEL_URL when reachable):
 npm run dev
 ```
 
-Set `LOCAL_MODEL_URL` in `backend/.env` (or use the provided `.env.example`) to `http://localhost:8000` to point the backend at the mock server.
+### Frontend
 
-6. **Access the application**:
-   Open your browser and navigate to `http://localhost:3000`
+```bash
+cd frontend
+npm install
+npm start
+```
 
-If you prefer to run the full stack via containers (recommended for parity):
+Open the app at `http://localhost:3000`.
+
+### Full stack with Docker
 
 ```bash
 docker-compose up --build
 ```
 
-This will build and start `frontend`, `backend`, and `nginx` as defined in `docker-compose.yml`.
+## API Routes
 
-## 📡 API Endpoints
+| Route                     | Method   | Purpose                        |
+| ------------------------- | -------- | ------------------------------ |
+| `/api/analyze-image`      | POST     | Analyze images or PDFs         |
+| `/api/HealthPlans`        | POST     | Generate a health plan         |
+| `/api/mental-health-chat` | POST     | Chat support                   |
+| `/api/test`               | GET      | Backend connectivity check     |
+| `/api/appointments`       | Various  | Appointment CRUD               |
+| `/api/model/health`       | GET      | Model availability status      |
+| `/api/model/mode`         | GET/POST | Read or set runtime model mode |
 
-| Endpoint                  | Method  | Description               | Request Body                                                            | Response                                |
-| ------------------------- | ------- | ------------------------- | ----------------------------------------------------------------------- | --------------------------------------- |
-| `/api/analyze-image`      | POST    | Analyze medical images    | File upload (image/PDF)                                                 | Diagnosis results with confidence level |
-| `/api/HealthPlans`        | POST    | Generate health plans     | Age, weight, height, activity level, dietary restrictions, sleep issues | Personalized diet and sleep routine     |
-| `/api/mental-health-chat` | POST    | Mental health chat        | User message                                                            | AI assistant response                   |
-| `/api/test`               | GET     | Test backend connectivity | -                                                                       | Connection status                       |
-| `/api/appointments`       | Various | Manage appointments       | Appointment details                                                     | Confirmation/details                    |
+## Model Behavior
 
-## 🔄 Component Flow
+- Gemini is used when quota and billing allow it.
+- Mock mode is the safest default for development and CI.
+- Ollama can be used as the local model backend when configured.
+- The health-plan controller applies a dietary restriction safety pass before returning results.
 
-![Component Flow](./diagram.png)
+## Current Status
 
-## 🧪 Features in Detail
+- The UI has been restyled with a shared dark healthcare theme.
+- The backend supports runtime model switching and health checks.
+- The README screenshots now match the current app pages.
+- Health-plan responses are guarded against non-compliant food suggestions.
 
-### X-ray Diagnosis Process
+## Contributing
 
-1. **Upload**: User uploads X-ray image or PDF document
-2. **Processing**: System converts PDFs to images if needed
-3. **AI Analysis**: OpenAI API analyzes the image with expert radiologist prompting
-4. **Results**: System returns diagnosis, confidence level, and recommendations
+1. Fork the repository.
+2. Create a feature branch.
+3. Make your changes.
+4. Commit and push.
+5. Open a pull request.
 
-### Health Plan Generation
+## Notes
 
-1. **Input Collection**: User provides health information and preferences
-2. **AI Processing**: System generates personalized diet and sleep plans
-3. **Presentation**: Interactive display of health recommendations
-4. **Follow-up**: Optional monitoring and adjustment features
-
-### Mental Health Support System
-
-1. **User Interface**: Chatbot with friendly, empathetic design
-2. **Context Management**: Conversation history tracking for coherent responses
-3. **AI Responses**: Empathetic and supportive message generation
-4. **Resources**: Integration with relaxation videos and exercises
-
-## 📝 Contributing
-
-We welcome contributions to improve MediRAG. Please follow these steps:
-
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature/AmazingFeature`)
-3. Make your changes
-4. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-5. Push to the branch (`git push origin feature/AmazingFeature`)
-6. Open a Pull Request
-
-## 👏 Acknowledgments
-
-- Gemini for providing the AI models
-- React and Node.js communities for excellent documentation
-- All contributors who have helped improve this project
-
-## 🔎 Project Status
-
-- Core features implemented: AI-powered X-ray analysis, personalized health-plan generator, mental-health chat flow, and in-memory appointment scheduling.
-- Backend: Node.js + Express, AI integration with Gemini; appointments currently stored in-memory (prototype).
-- CI: GitHub Actions added; a temporary workaround (`npm ci --ignore-scripts`) is used for native dependency builds while a durable CI strategy is implemented.
-
-## 🚧 Roadmap — Future Improvements
-
-- Persist appointments using Prisma + PostgreSQL for durable storage and transactional integrity.
-- Migrate conversation state to per-user session store (Redis) to prevent cross-user leakage and support horizontal scaling.
-- Replace CI `--ignore-scripts` workaround: add native-build runners or prebuilt binaries to support `pdf-img-convert`/`canvas` in CI.
-- Add comprehensive tests (unit, integration, and E2E with Jest, Supertest, and Cypress) and enforce them in CI.
-- Implement authentication and authorization (OAuth2 / JWT) and role-based access control for clinicians and patients.
-- Introduce background workers (BullMQ/Redis) for heavy tasks (PDF conversion, image preprocessing) to improve request latency.
-- Add observability: structured logging, metrics (Prometheus) and error tracking (Sentry) for production readiness.
-- Container orchestration and deployment (Helm + Kubernetes) and automated production CI/CD pipelines.
-- Performance tuning and caching (CDN for static assets, Redis cache for frequent queries).
-- Security & compliance: threat modeling, input sanitization, and HIPAA/GDPR considerations for production data handling.
+This project is for healthcare workflow assistance and triage support. It does not replace clinical judgment, emergency care, or licensed medical advice.

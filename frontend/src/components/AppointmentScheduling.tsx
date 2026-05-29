@@ -2,7 +2,6 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import {
   Calendar,
   Check,
-  ChevronDown,
   Clipboard,
   Clock,
   Heart,
@@ -13,6 +12,14 @@ import {
   User,
 } from "lucide-react";
 import { createAppointment } from "../api/appointmentApi";
+import {
+  alertPanelClass,
+  fieldInputClass,
+  fieldLabelClass,
+  fieldOptionClass,
+  fieldSelectClass,
+  fieldTextareaClass,
+} from "./ui/formTheme";
 
 interface Appointment {
   date: string;
@@ -110,11 +117,11 @@ const AppointmentScheduling: React.FC = () => {
               booking
             </div>
             <h1 className="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-white sm:text-6xl">
-              Schedule care in a calm, premium flow.
+              Book your medical appointment in minutes.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
-              A focused booking experience designed to feel as polished as the
-              rest of the site.
+              Choose a clinician, visit type, and preferred time. We collect the
+              details your care team needs before your visit.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -132,7 +139,7 @@ const AppointmentScheduling: React.FC = () => {
               <InfoCard label="Doctors" value="5 specialists" />
               <InfoCard label="Types" value="6 visit options" />
               <InfoCard label="Focus" value="Easy completion" />
-              <InfoCard label="Style" value="Premium theme" />
+              <InfoCard label="Support" value="Email confirmation" />
             </div>
           </div>
         </section>
@@ -250,10 +257,7 @@ const AppointmentScheduling: React.FC = () => {
                 />
 
                 {error && (
-                  <div
-                    className="rounded-3xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200"
-                    role="alert"
-                  >
+                  <div className={alertPanelClass} role="alert">
                     {error}
                   </div>
                 )}
@@ -341,11 +345,12 @@ const AppointmentScheduling: React.FC = () => {
 
             <div className="rounded-[2rem] border border-white/10 bg-[#0b1320]/90 p-6 backdrop-blur-xl">
               <p className="text-xs uppercase tracking-[0.35em] text-slate-500">
-                Calm by design
+                Patient-centered flow
               </p>
               <p className="mt-4 text-sm leading-7 text-slate-300">
-                The booking form uses the same dark premium look as the rest of
-                the app so every step feels connected.
+                We keep the intake process short and clear so patients can
+                complete booking quickly and clinicians receive structured
+                context before the consultation.
               </p>
             </div>
           </aside>
@@ -379,7 +384,7 @@ const Field: React.FC<{
   <div>
     <label
       htmlFor={name}
-      className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-200"
+      className={`${fieldLabelClass} flex items-center gap-2`}
     >
       <Icon className="h-4 w-4 text-amber-300" />
       {label}
@@ -390,7 +395,7 @@ const Field: React.FC<{
       id={name}
       required={required}
       placeholder={placeholder}
-      className="block w-full rounded-[1.25rem] border border-white/10 bg-[#0b1320] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-amber-300/40 focus:bg-white/10"
+      className={fieldInputClass}
       value={value}
       onChange={onChange}
     />
@@ -421,7 +426,7 @@ const SelectField: React.FC<{
   <div>
     <label
       htmlFor={name}
-      className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-200"
+      className={`${fieldLabelClass} flex items-center gap-2`}
     >
       <Icon className="h-4 w-4 text-amber-300" />
       {label}
@@ -431,18 +436,19 @@ const SelectField: React.FC<{
         name={name}
         id={name}
         required={required}
-        className="block w-full appearance-none rounded-[1.25rem] border border-white/10 bg-[#0b1320] px-4 py-3 pr-11 text-sm text-white outline-none transition focus:border-amber-300/40 focus:bg-white/10"
+        className={fieldSelectClass}
         value={value}
         onChange={onChange}
       >
-        <option value="">{placeholder}</option>
+        <option value="" className={fieldOptionClass}>
+          {placeholder}
+        </option>
         {options.map((option) => (
-          <option key={option} value={option}>
+          <option key={option} value={option} className={fieldOptionClass}>
             {option}
           </option>
         ))}
       </select>
-      <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
     </div>
   </div>
 );
@@ -460,7 +466,7 @@ const TextareaField: React.FC<{
   <div>
     <label
       htmlFor={name}
-      className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-200"
+      className={`${fieldLabelClass} flex items-center gap-2`}
     >
       <Icon className="h-4 w-4 text-amber-300" />
       {label}
@@ -470,7 +476,7 @@ const TextareaField: React.FC<{
       id={name}
       rows={3}
       placeholder={placeholder}
-      className="block w-full rounded-[1.25rem] border border-white/10 bg-[#0b1320] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-amber-300/40 focus:bg-white/10"
+      className={fieldTextareaClass}
       value={value}
       onChange={onChange}
     />
