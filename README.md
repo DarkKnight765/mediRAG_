@@ -33,25 +33,15 @@ All input surfaces use a shared dark form system for consistency.
 
 ![Home screen](./Images/Home-new.png)
 
-### X-ray Diagnosis
-
-![X-ray diagnosis screen](./Images/Xray-new.png)
-
 ### Health Plans
 
 ![Health plans screen](./Images/HealthPlans-new.png)
-
-### Appointments
-
-![Appointment booking screen](./Images/Appointments-new.png)
 
 ### Mental Health Support
 
 ![Mental health support screen](./Images/MentalHealth-new.png)
 
-### Contact
-
-![Contact screen](./Images/Contact-new.png)
+Other pages follow the same UI system and are available in the app, but only these three screenshots are shown here to keep the README concise.
 
 ## Architecture
 
@@ -176,6 +166,13 @@ docker-compose up --build
 - The backend supports runtime model switching and health checks.
 - The README screenshots now match the current app pages.
 - Health-plan responses are guarded against non-compliant food suggestions.
+
+## Future Improvements
+
+- Add a persistent database layer for appointments, user profiles, chat history, and health-plan records.
+- Add user authentication so patients and clinicians can sign in securely and access the right workflow.
+- Expand role-based access control for patients, clinicians, and administrators.
+- Add more automated tests around model routing, compliance guardrails, and form validation.
 
 ## Contributing
 
