@@ -52,4 +52,14 @@ exports.setMode = async (req, res) => {
   }
 };
 
+exports.getMode = async (req, res) => {
+  try {
+    const runtime = require("../config/runtime");
+    return res.json({ mode: runtime.getMode() });
+  } catch (e) {
+    console.error("Error getting mode", e);
+    return res.status(500).json({ error: "internal" });
+  }
+};
+
 module.exports = exports;

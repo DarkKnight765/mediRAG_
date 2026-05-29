@@ -32,6 +32,9 @@ const MentalHealthSupport: React.FC = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isMockMode, setIsMockMode] = useState(false);
+  const [runtimeMode, setRuntimeMode] = useState<
+    "auto" | "mock" | "gemini" | null
+  >(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -95,6 +98,18 @@ const MentalHealthSupport: React.FC = () => {
         const localOk = data?.models?.localModel === "ok";
         const geminiConfigured = data?.models?.gemini === "ok";
         setIsMockMode(localOk && !geminiConfigured);
+        // also fetch explicit runtime mode if available
+        try {
+          const mres = await fetch(`${API_BASE_URL}/model/mode`);
+          if (mres.ok) {
+            const md = await mres.json();
+            setRuntimeMode(
+              md.mode || (localOk && !geminiConfigured ? "mock" : "auto"),
+            );
+          }
+        } catch (e) {
+          // ignore
+        }
       } catch (e) {
         // ignore
       }
@@ -103,6 +118,29 @@ const MentalHealthSupport: React.FC = () => {
       cancelled = true;
     };
   }, []);
+
+  async function setMode(mode: "auto" | "mock" | "gemini") {
+    try {
+      const res = await fetch(`${API_BASE_URL}/model/mode`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode }),
+      });
+      if (res.ok) {
+        setRuntimeMode(mode);
+        // refresh health banner
+        const h = await fetch(`${API_BASE_URL}/model/health`);
+        if (h.ok) {
+          const data = await h.json();
+          const localOk = data?.models?.localModel === "ok";
+          const geminiConfigured = data?.models?.gemini === "ok";
+          setIsMockMode(localOk && !geminiConfigured);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to set mode", err);
+    }
+  }
 
   const handleSend = async () => {
     if (input.trim() || selectedFile) {
@@ -224,9 +262,23 @@ const MentalHealthSupport: React.FC = () => {
                 Mental health support
               </h2>
             </div>
-            <div className="flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs font-semibold text-amber-200">
-              <Sparkles className="h-4 w-4" />
-              Always on
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-xs font-semibold text-amber-200">
+                <Sparkles className="h-4 w-4" />
+                Always on
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="text-xs text-slate-300 mr-2">Mode</label>
+                <select
+                  value={runtimeMode || "auto"}
+                  onChange={(e) => setMode(e.target.value as any)}
+                  className="rounded-md bg-[#0b1320] border border-white/10 text-sm text-white px-2 py-1"
+                >
+                  <option value="auto">Auto</option>
+                  <option value="mock">Mock</option>
+                  <option value="gemini">Gemini</option>
+                </select>
+              </div>
             </div>
           </div>
 
