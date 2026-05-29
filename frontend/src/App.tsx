@@ -1,20 +1,21 @@
-import React from 'react';
-import './styles/animations.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './components/HomePage';
-import XrayDiagnosis from './components/XrayDiagnosis';
-import HealthPlans from './components/HealthPlans';
-import AppointmentScheduling from './components/AppointmentScheduling';
-import MentalHealthSupport from './components/MentalHealthSupport';
-import ServicesPage from './components/ServicesPage';
-import AboutPage from './components/AboutPage';
-import ContactPage from './components/ContactPage';
-import PrivacyPolicy from './components/PrivacyPolicy';
+import React from "react";
+import "./styles/animations.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import HomePage from "./components/HomePage";
+import XrayDiagnosis from "./components/XrayDiagnosis";
+import HealthPlans from "./components/HealthPlans";
+import AppointmentScheduling from "./components/AppointmentScheduling";
+import MentalHealthSupport from "./components/MentalHealthSupport";
+import ServicesPage from "./components/ServicesPage";
+import AboutPage from "./components/AboutPage";
+import ContactPage from "./components/ContactPage";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import SiteLayout from "./components/SiteLayout";
 
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="App">
+      <SiteLayout>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/xray-diagnosis" element={<XrayDiagnosis />} />
@@ -26,7 +27,7 @@ const App: React.FC = () => {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
-      </div>
+      </SiteLayout>
     </Router>
   );
 };

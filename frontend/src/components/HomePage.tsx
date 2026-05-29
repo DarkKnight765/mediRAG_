@@ -1,221 +1,101 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FileText, Utensils, Calendar, Brain } from "lucide-react";
+import {
+  ArrowUpRight,
+  Brain,
+  CalendarDays,
+  FileText,
+  Sparkles,
+  Target,
+} from "lucide-react";
+
+const quickLinks = [
+  {
+    icon: FileText,
+    title: "Diagnosis",
+    text: "X-ray and document analysis",
+    to: "/xray-diagnosis",
+  },
+  {
+    icon: Target,
+    title: "Plans",
+    text: "Personalized health plans",
+    to: "/health-plans",
+  },
+  {
+    icon: CalendarDays,
+    title: "Appointments",
+    text: "Book care in a few steps",
+    to: "/appointments",
+  },
+  {
+    icon: Brain,
+    title: "AI Support",
+    text: "Calm guided conversation",
+    to: "/mental-health",
+  },
+];
 
 const HomePage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <header className="bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow-md">
-        <div className="container mx-auto py-4 px-6">
-          <nav className="flex justify-between items-center">
-            <div className="text-2xl font-bold">MediRAG</div>
-          </nav>
-        </div>
-      </header>
-
-      <main>
-        <section className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-20">
-          <div className="container mx-auto px-6 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Welcome to MediRAG
-            </h1>
-            <p className="text-xl mb-8">
-              Your Comprehensive Healthcare Companion
-            </p>
+    <div className="mx-auto max-w-6xl px-6 py-20 lg:px-8 lg:py-24">
+      <section className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-300">
+            <Sparkles className="h-4 w-4 text-amber-300" /> MediRAG
           </div>
-        </section>
+          <h1 className="mt-6 max-w-3xl text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
+            One home page. Separate pages for everything else.
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+            Use the homepage to orient visitors, then send them to dedicated
+            pages for services, plans, appointments, and AI support.
+          </p>
 
-        <section className="py-16">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
-              Our Key Features
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <FeatureCard
-                icon={<FileText size={40} />}
-                title="X-ray and Document Diagnosis"
-                description="Advanced AI-powered analysis of medical images and documents for quick and accurate diagnoses."
-                link="/xray-diagnosis"
-              />
-              <FeatureCard
-                icon={<Utensils size={40} />}
-                title="Personalized Health Plans"
-                description="Tailored nutrition and sleep recommendations based on your unique health profile and goals."
-                link="/health-plans"
-              />
-              <FeatureCard
-                icon={<Calendar size={40} />}
-                title="Appointment Scheduling"
-                description="Effortless booking of medical appointments with healthcare professionals at your convenience."
-                link="/appointments"
-              />
-              <FeatureCard
-                icon={<Brain size={40} />}
-                title="Mental Health Support"
-                description="24/7 access to mental health resources, including AI-assisted counseling and professional support."
-                link="/mental-health"
-              />
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-gradient-to-r from-blue-100 to-blue-200 py-16">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
-              Why Choose MediRAG?
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <ReasonCard
-                title="Comprehensive Care"
-                description="Access a wide range of health services under one platform, from diagnostics to personalized health plans."
-              />
-              <ReasonCard
-                title="Cutting-edge Technology"
-                description="Benefit from our state-of-the-art AI and machine learning algorithms for accurate health insights."
-              />
-              <ReasonCard
-                title="Personalized Approach"
-                description="Receive tailored health recommendations and support based on your unique health profile and needs."
-              />
-            </div>
-          </div>
-        </section>
-
-        <section className="py-16">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
-              Get Started Today
-            </h2>
-            <div className="text-center">
-              <p className="text-xl mb-8">
-                Experience the future of healthcare with MediRAG. Our innovative
-                platform combines advanced technology with personalized care to
-                provide you with the best possible health outcomes.
-              </p>
-              <Link
-                to="/signup"
-                className="bg-blue-500 text-white py-2 px-6 rounded-full text-lg font-semibold hover:bg-blue-600 transition duration-300"
-              >
-                Sign Up Now
-              </Link>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-8">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-wrap justify-between items-center">
-            <div className="w-full md:w-1/3 text-center md:text-left mb-6 md:mb-0">
-              <h3 className="text-2xl font-bold">MediRAG</h3>
-              <p className="mt-2">Your healthcare companion</p>
-            </div>
-            <div className="w-full md:w-1/3 text-center mb-6 md:mb-0">
-              <h4 className="text-lg font-semibold mb-2">Quick Links</h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    to="/services"
-                    className="hover:text-blue-200 transition"
-                  >
-                    Services
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/about" className="hover:text-blue-200 transition">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/contact"
-                    className="hover:text-blue-200 transition"
-                  >
-                    Contact
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/privacy"
-                    className="hover:text-blue-200 transition"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="w-full md:w-1/3 text-center md:text-right">
-              <h4 className="text-lg font-semibold mb-2">Follow Us</h4>
-              <div className="flex justify-center md:justify-end space-x-4">
-                <a
-                  href="https://facebook.com"
-                  className="hover:text-blue-200 transition"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <i className="fab fa-facebook"></i>
-                </a>
-                <a
-                  href="https://x.com"
-                  className="hover:text-blue-200 transition"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <i className="fab fa-twitter"></i>
-                </a>
-                <a
-                  href="https://instagram.com"
-                  className="hover:text-blue-200 transition"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <i className="fab fa-instagram"></i>
-                </a>
-                <a
-                  href="https://linkedin.com"
-                  className="hover:text-blue-200 transition"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <i className="fab fa-linkedin"></i>
-                </a>
-              </div>
-            </div>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link
+              to="/services"
+              className="inline-flex items-center gap-2 rounded-full bg-amber-300 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-200"
+            >
+              View services <ArrowUpRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              Contact us
+            </Link>
           </div>
         </div>
-      </footer>
-    </div>
-  );
-};
 
-const FeatureCard: React.FC<{
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  link: string;
-}> = ({ icon, title, description, link }) => {
-  return (
-    <Link
-      to={link}
-      className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-300 border border-gray-200"
-    >
-      <div className="flex flex-col items-center text-center">
-        <div className="text-blue-500 mb-4">{icon}</div>
-        <h3 className="text-xl font-semibold mb-2 text-gray-800">{title}</h3>
-        <p className="text-gray-600">{description}</p>
-      </div>
-    </Link>
-  );
-};
-
-const ReasonCard: React.FC<{ title: string; description: string }> = ({
-  title,
-  description,
-}) => {
-  return (
-    <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-      <h3 className="text-xl font-semibold mb-2 text-gray-800">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl">
+          <p className="text-sm uppercase tracking-[0.35em] text-slate-400">
+            Separate pages
+          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {quickLinks.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.title}
+                  to={item.to}
+                  className="rounded-3xl border border-white/10 bg-[#0d1723] p-5 transition hover:border-amber-300/30 hover:bg-[#111d2a]"
+                >
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 text-amber-300">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h2 className="mt-4 text-lg font-semibold text-white">
+                    {item.title}
+                  </h2>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">
+                    {item.text}
+                  </p>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
