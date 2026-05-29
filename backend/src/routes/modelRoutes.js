@@ -3,5 +3,7 @@ const router = express.Router();
 const modelController = require("../controllers/modelController");
 
 router.get("/health", modelController.health);
+router.post("/mode", modelController.setMode);
+router.get("/mode", modelController.getMode);
 
 module.exports = router;

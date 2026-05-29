@@ -2,7 +2,8 @@ const http = require("http");
 const env = require("../config/env");
 
 exports.health = async (req, res) => {
-  const localUrl = process.env.LOCAL_MODEL_URL || env.localModelUrl;
+  const runtime = require("../config/runtime");
+  const localUrl = runtime.getLocalModelUrl();
   const statuses = { localModel: "not-configured", gemini: "not-configured" };
 
   if (localUrl) {
@@ -32,6 +33,33 @@ exports.health = async (req, res) => {
   }
 
   res.json({ status: "ok", models: statuses });
+};
+
+exports.setMode = async (req, res) => {
+  try {
+    const runtime = require("../config/runtime");
+    const mode = req.body && req.body.mode ? String(req.body.mode) : null;
+    if (!mode)
+      return res
+        .status(400)
+        .json({ error: "mode required (auto|mock|gemini)" });
+    const ok = runtime.setMode(mode);
+    if (!ok) return res.status(400).json({ error: "invalid mode" });
+    return res.json({ status: "ok", mode: runtime.getMode() });
+  } catch (e) {
+    console.error("Error setting mode", e);
+    return res.status(500).json({ error: "internal" });
+  }
+};
+
+exports.getMode = async (req, res) => {
+  try {
+    const runtime = require("../config/runtime");
+    return res.json({ mode: runtime.getMode() });
+  } catch (e) {
+    console.error("Error getting mode", e);
+    return res.status(500).json({ error: "internal" });
+  }
 };
 
 module.exports = exports;
