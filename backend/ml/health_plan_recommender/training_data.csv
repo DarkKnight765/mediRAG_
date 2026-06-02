@@ -1,0 +1,25 @@
+age,weight,height,activity_level,dietary_restrictions,sleep_issues,label
+20,60,180,very active,vegetarian,nothing,vegetarian_active
+24,58,170,moderately active,vegetarian,insomnia,vegetarian_sleep_support
+31,72,176,lightly active,none,stress,sleep_support
+45,85,178,sedentary,low_sodium,nothing,low_sodium_control
+28,70,175,extra active,none,fatigue,endurance_recovery
+34,90,180,moderately active,low_carb,late_night,weight_management
+26,64,168,very active,vegan,nothing,vegan_energy
+39,78,172,lightly active,gluten_free,insomnia,gentle_recovery
+52,88,174,sedentary,diabetic,sleep apnea,balanced_diabetes
+29,62,169,extra active,high_protein,nothing,endurance_recovery
+41,74,173,moderately active,vegetarian,stress,vegetarian_balance
+37,80,177,lightly active,none,irregular,balanced
+22,56,165,very active,vegan,stress,vegan_energy
+48,91,181,sedentary,low_sodium,insomnia,low_sodium_sleep_support
+30,68,171,moderately active,none,nothing,balanced
+27,59,167,very active,vegetarian,late_night,vegetarian_active
+55,83,175,lightly active,diabetic,stress,balanced_diabetes
+33,76,178,extra active,none,insomnia,sleep_support
+19,54,162,very active,vegan,late_night,vegan_energy
+46,87,179,sedentary,gluten_free,nothing,gentle_recovery
+38,73,170,moderately active,low_carb,stress,weight_management
+25,65,168,extra active,vegetarian,nothing,vegetarian_active
+44,81,176,lightly active,high_protein,insomnia,endurance_recovery
+36,79,174,moderately active,none,fatigue,balanced

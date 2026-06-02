@@ -1,4 +1,5 @@
 const aiService = require("../services/aiService");
+const { recommendHealthPlan } = require("../services/healthPlanRecommender");
 
 function extractJsonObject(text) {
   if (typeof text !== "string") {
@@ -103,6 +104,26 @@ exports.generateHealthPlan = async (req, res) => {
     };
 
     console.log("Using data for health plan generation:", sampleData);
+
+    const mlHealthPlan = recommendHealthPlan({
+      age: sampleData.age,
+      weight: sampleData.weight,
+      height: sampleData.height,
+      activityLevel: sampleData.activityLevel,
+      dietaryRestrictions: sampleData.dietaryRestrictions,
+      sleepIssues: sampleData.sleepIssues,
+    });
+
+    if (mlHealthPlan) {
+      console.log("ML recommender selected health plan:", mlHealthPlan);
+      return res.json({
+        message: "Health plan generated successfully!",
+        healthPlan: sanitizeHealthPlanForRestrictions(
+          mlHealthPlan,
+          sampleData.dietaryRestrictions,
+        ),
+      });
+    }
 
     const prompt = `Generate a personalized health plan for a ${sampleData.age}-year-old individual weighing ${sampleData.weight} kg and ${sampleData.height} cm tall. Their activity level is ${sampleData.activityLevel}, and they have the following dietary restrictions: ${sampleData.dietaryRestrictions}. They also report the following sleep issues: ${sampleData.sleepIssues}. Provide a diet plan and sleep routine in JSON format. Do not use markdown formatting or code blocks. Only return the JSON object.`;
 
