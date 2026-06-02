@@ -1,0 +1,28 @@
+{
+  "trained_at": "2026-05-29T20:50:34.158694+00:00",
+  "samples": 24,
+  "labels": [
+    "balanced",
+    "balanced_diabetes",
+    "endurance_recovery",
+    "gentle_recovery",
+    "low_sodium_control",
+    "low_sodium_sleep_support",
+    "sleep_support",
+    "vegan_energy",
+    "vegetarian_active",
+    "vegetarian_balance",
+    "vegetarian_sleep_support",
+    "weight_management"
+  ],
+  "numeric_columns": [
+    "age",
+    "weight",
+    "height"
+  ],
+  "categorical_columns": [
+    "activity_level",
+    "dietary_restrictions",
+    "sleep_issues"
+  ]
+}

@@ -1,0 +1,340 @@
+{
+  "balanced": {
+    "diet_plan": {
+      "caloric_intake": 2200,
+      "macronutrients": {
+        "carbohydrates": "45%",
+        "proteins": "25%",
+        "fats": "30%"
+      },
+      "meal_plan": {
+        "breakfast": {
+          "time": "8:00 AM",
+          "items": ["Oatmeal", "Greek yogurt", "Berries"]
+        },
+        "lunch": {
+          "time": "1:00 PM",
+          "items": ["Grilled chicken bowl", "Brown rice", "Leafy greens"]
+        },
+        "dinner": {
+          "time": "7:00 PM",
+          "items": ["Salmon", "Roasted vegetables", "Quinoa"]
+        }
+      }
+    },
+    "sleep_routine": {
+      "bedtime": "10:30 PM",
+      "wake_time": "6:30 AM",
+      "pre_sleep_activities": [
+        "Reduce screen time 60 minutes before bed",
+        "Light stretching",
+        "Deep breathing exercises"
+      ]
+    }
+  },
+  "vegetarian_active": {
+    "diet_plan": {
+      "caloric_intake": 2400,
+      "macronutrients": {
+        "carbohydrates": "48%",
+        "proteins": "22%",
+        "fats": "30%"
+      },
+      "meal_plan": {
+        "breakfast": {
+          "time": "7:30 AM",
+          "items": ["Oats with chia seeds", "Greek yogurt", "Banana"]
+        },
+        "lunch": {
+          "time": "12:30 PM",
+          "items": ["Tofu quinoa bowl", "Mixed vegetables", "Avocado"]
+        },
+        "dinner": {
+          "time": "7:00 PM",
+          "items": ["Paneer curry", "Brown rice", "Spinach salad"]
+        },
+        "snacks": {
+          "time": "3:30 PM",
+          "items": ["Roasted chickpeas", "Fruit", "Nuts"]
+        }
+      }
+    },
+    "sleep_routine": {
+      "bedtime": "10:00 PM",
+      "wake_time": "6:15 AM",
+      "pre_sleep_activities": [
+        "Hydrate earlier in the evening",
+        "Stretch for 10 minutes",
+        "Keep lights dim after 9 PM"
+      ]
+    }
+  },
+  "vegetarian_sleep_support": {
+    "diet_plan": {
+      "caloric_intake": 2100,
+      "macronutrients": {
+        "carbohydrates": "50%",
+        "proteins": "20%",
+        "fats": "30%"
+      },
+      "meal_plan": {
+        "breakfast": {
+          "time": "8:00 AM",
+          "items": ["Overnight oats", "Berries", "Pumpkin seeds"]
+        },
+        "lunch": {
+          "time": "1:00 PM",
+          "items": ["Lentil salad", "Whole-grain wrap", "Greek yogurt"]
+        },
+        "dinner": {
+          "time": "7:00 PM",
+          "items": ["Vegetable stir-fry", "Tofu", "Rice"]
+        }
+      }
+    },
+    "sleep_routine": {
+      "bedtime": "10:00 PM",
+      "wake_time": "6:30 AM",
+      "pre_sleep_activities": [
+        "Write down tomorrow's plan",
+        "Limit caffeine after lunch",
+        "Use a breathing exercise before bed"
+      ]
+    }
+  },
+  "sleep_support": {
+    "diet_plan": {
+      "caloric_intake": 2100,
+      "macronutrients": {
+        "carbohydrates": "45%",
+        "proteins": "25%",
+        "fats": "30%"
+      },
+      "meal_plan": {
+        "breakfast": {
+          "time": "8:00 AM",
+          "items": ["Eggs", "Whole-grain toast", "Fruit"]
+        },
+        "lunch": {
+          "time": "1:00 PM",
+          "items": ["Turkey sandwich", "Salad", "Yogurt"]
+        },
+        "dinner": {
+          "time": "7:00 PM",
+          "items": ["Chicken soup", "Vegetables", "Rice"]
+        }
+      }
+    },
+    "sleep_routine": {
+      "bedtime": "9:45 PM",
+      "wake_time": "6:30 AM",
+      "pre_sleep_activities": [
+        "Keep a fixed sleep schedule",
+        "Avoid screens 1 hour before bed",
+        "Use relaxation breathing"
+      ]
+    }
+  },
+  "weight_management": {
+    "diet_plan": {
+      "caloric_intake": 1950,
+      "macronutrients": {
+        "carbohydrates": "40%",
+        "proteins": "30%",
+        "fats": "30%"
+      },
+      "meal_plan": {
+        "breakfast": {
+          "time": "8:00 AM",
+          "items": ["Protein oats", "Berries", "Chia seeds"]
+        },
+        "lunch": {
+          "time": "1:00 PM",
+          "items": ["Grilled chicken salad", "Quinoa", "Olive oil dressing"]
+        },
+        "dinner": {
+          "time": "7:00 PM",
+          "items": ["Baked fish", "Steamed vegetables", "Brown rice"]
+        }
+      }
+    },
+    "sleep_routine": {
+      "bedtime": "10:15 PM",
+      "wake_time": "6:30 AM",
+      "pre_sleep_activities": [
+        "Plan tomorrow's meals",
+        "Stretch lightly",
+        "Keep the room cool"
+      ]
+    }
+  },
+  "low_sodium_control": {
+    "diet_plan": {
+      "caloric_intake": 2100,
+      "macronutrients": {
+        "carbohydrates": "45%",
+        "proteins": "25%",
+        "fats": "30%"
+      },
+      "meal_plan": {
+        "breakfast": {
+          "time": "8:00 AM",
+          "items": ["Unsalted oatmeal", "Fruit", "Low-fat yogurt"]
+        },
+        "lunch": {
+          "time": "1:00 PM",
+          "items": ["Grilled chicken", "Steamed vegetables", "Brown rice"]
+        },
+        "dinner": {
+          "time": "7:00 PM",
+          "items": ["Herb-baked salmon", "Roasted vegetables", "Potatoes"]
+        }
+      }
+    },
+    "sleep_routine": {
+      "bedtime": "10:30 PM",
+      "wake_time": "6:30 AM",
+      "pre_sleep_activities": [
+        "Limit heavy meals late at night",
+        "Practice calm breathing",
+        "Keep a simple bedtime routine"
+      ]
+    }
+  },
+  "endurance_recovery": {
+    "diet_plan": {
+      "caloric_intake": 2600,
+      "macronutrients": {
+        "carbohydrates": "50%",
+        "proteins": "25%",
+        "fats": "25%"
+      },
+      "meal_plan": {
+        "breakfast": {
+          "time": "7:00 AM",
+          "items": ["Oatmeal", "Protein smoothie", "Fruit"]
+        },
+        "lunch": {
+          "time": "12:30 PM",
+          "items": ["Chicken rice bowl", "Vegetables", "Avocado"]
+        },
+        "dinner": {
+          "time": "7:30 PM",
+          "items": ["Turkey pasta", "Salad", "Yogurt"]
+        },
+        "snacks": {
+          "time": "4:00 PM",
+          "items": ["Trail mix", "Banana", "Protein shake"]
+        }
+      }
+    },
+    "sleep_routine": {
+      "bedtime": "10:00 PM",
+      "wake_time": "6:00 AM",
+      "pre_sleep_activities": [
+        "Hydrate well after training",
+        "Foam roll or stretch",
+        "Avoid late intense workouts"
+      ]
+    }
+  },
+  "vegan_energy": {
+    "diet_plan": {
+      "caloric_intake": 2300,
+      "macronutrients": {
+        "carbohydrates": "50%",
+        "proteins": "20%",
+        "fats": "30%"
+      },
+      "meal_plan": {
+        "breakfast": {
+          "time": "7:30 AM",
+          "items": ["Vegan oats", "Nut butter", "Banana"]
+        },
+        "lunch": {
+          "time": "12:30 PM",
+          "items": ["Tofu grain bowl", "Vegetables", "Tahini dressing"]
+        },
+        "dinner": {
+          "time": "7:00 PM",
+          "items": ["Chickpea curry", "Rice", "Side salad"]
+        }
+      }
+    },
+    "sleep_routine": {
+      "bedtime": "10:00 PM",
+      "wake_time": "6:30 AM",
+      "pre_sleep_activities": [
+        "Turn off bright lights early",
+        "Drink herbal tea",
+        "Use a short breathing exercise"
+      ]
+    }
+  },
+  "balanced_diabetes": {
+    "diet_plan": {
+      "caloric_intake": 2000,
+      "macronutrients": {
+        "carbohydrates": "40%",
+        "proteins": "30%",
+        "fats": "30%"
+      },
+      "meal_plan": {
+        "breakfast": {
+          "time": "8:00 AM",
+          "items": ["Egg scramble", "Whole-grain toast", "Berries"]
+        },
+        "lunch": {
+          "time": "1:00 PM",
+          "items": ["Chicken salad", "Quinoa", "Vegetables"]
+        },
+        "dinner": {
+          "time": "7:00 PM",
+          "items": ["Grilled fish", "Broccoli", "Brown rice"]
+        }
+      }
+    },
+    "sleep_routine": {
+      "bedtime": "10:15 PM",
+      "wake_time": "6:30 AM",
+      "pre_sleep_activities": [
+        "Check evening glucose routine as advised",
+        "Light stretching",
+        "Keep a fixed bedtime"
+      ]
+    }
+  },
+  "gentle_recovery": {
+    "diet_plan": {
+      "caloric_intake": 2050,
+      "macronutrients": {
+        "carbohydrates": "45%",
+        "proteins": "25%",
+        "fats": "30%"
+      },
+      "meal_plan": {
+        "breakfast": {
+          "time": "8:00 AM",
+          "items": ["Porridge", "Fruit", "Seeds"]
+        },
+        "lunch": {
+          "time": "1:00 PM",
+          "items": ["Soup", "Sandwich", "Salad"]
+        },
+        "dinner": {
+          "time": "7:00 PM",
+          "items": ["Baked chicken", "Vegetables", "Potatoes"]
+        }
+      }
+    },
+    "sleep_routine": {
+      "bedtime": "10:00 PM",
+      "wake_time": "6:30 AM",
+      "pre_sleep_activities": [
+        "Keep tasks simple in the evening",
+        "Use breathing practice",
+        "Avoid late caffeine"
+      ]
+    }
+  }
+}
