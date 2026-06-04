@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
+import axios from "axios";
 import {
   Bot,
   Brain,
@@ -47,32 +49,11 @@ const MentalHealthSupport: React.FC = () => {
   const sendMessageToBackend = async (message: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/mental-health-chat`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message }),
-      });
-
-      if (!response.ok) {
-        let errorMessage = "Failed to get response from server";
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.error || errorMessage;
-        } catch {
-          // Keep the default message if the response is not JSON.
-        }
-        throw new Error(errorMessage);
-      }
-
-      const data = await response.json();
-      return data.response;
-    } catch (error) {
+      const response = await axios.post(`${API_BASE_URL}/mental-health-chat`, { message });
+      return response.data.response;
+    } catch (error: any) {
       console.error("Error sending message to backend:", error);
-      return error instanceof Error
-        ? error.message
-        : "I'm sorry, I'm having trouble connecting right now. Please try again later.";
+      return error.response?.data?.error || error.message || "I'm sorry, I'm having trouble connecting right now. Please try again later.";
     } finally {
       setIsLoading(false);
     }
@@ -97,22 +78,18 @@ const MentalHealthSupport: React.FC = () => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/model/health`);
-        if (!res.ok) return;
-        const data = await res.json();
+        const res = await axios.get(`${API_BASE_URL}/model/health`);
         if (cancelled) return;
+        const data = res.data;
         const localOk = data?.models?.localModel === "ok";
         const geminiConfigured = data?.models?.gemini === "ok";
         setIsMockMode(localOk && !geminiConfigured);
         // also fetch explicit runtime mode if available
         try {
-          const mres = await fetch(`${API_BASE_URL}/model/mode`);
-          if (mres.ok) {
-            const md = await mres.json();
-            setRuntimeMode(
-              md.mode || (localOk && !geminiConfigured ? "mock" : "auto"),
-            );
-          }
+          const mres = await axios.get(`${API_BASE_URL}/model/mode`);
+          setRuntimeMode(
+            mres.data.mode || (localOk && !geminiConfigured ? "mock" : "auto"),
+          );
         } catch (e) {
           // ignore
         }
@@ -127,22 +104,16 @@ const MentalHealthSupport: React.FC = () => {
 
   async function setMode(mode: "auto" | "mock" | "gemini") {
     try {
-      const res = await fetch(`${API_BASE_URL}/model/mode`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode }),
-      });
-      if (res.ok) {
-        setRuntimeMode(mode);
-        // refresh health banner
-        const h = await fetch(`${API_BASE_URL}/model/health`);
-        if (h.ok) {
-          const data = await h.json();
-          const localOk = data?.models?.localModel === "ok";
-          const geminiConfigured = data?.models?.gemini === "ok";
-          setIsMockMode(localOk && !geminiConfigured);
-        }
-      }
+      await axios.post(`${API_BASE_URL}/model/mode`, { mode });
+      setRuntimeMode(mode);
+      // refresh health banner
+      try {
+        const h = await axios.get(`${API_BASE_URL}/model/health`);
+        const data = h.data;
+        const localOk = data?.models?.localModel === "ok";
+        const geminiConfigured = data?.models?.gemini === "ok";
+        setIsMockMode(localOk && !geminiConfigured);
+      } catch (err) {}
     } catch (err) {
       console.error("Failed to set mode", err);
     }
@@ -206,9 +177,9 @@ const MentalHealthSupport: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-7xl flex-col px-6 py-8 lg:px-8">
-      <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-        <aside className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+    <div className="mx-auto flex h-[calc(100vh-6rem)] max-w-7xl flex-col px-6 py-6 lg:px-8">
+      <div className="grid h-full gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+        <aside className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-xl h-fit lg:h-full lg:overflow-y-auto">
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs uppercase tracking-[0.3em] text-emerald-300">
             <HeartPulse className="h-4 w-4" />
             Atlas support
@@ -252,7 +223,7 @@ const MentalHealthSupport: React.FC = () => {
           </div>
         </aside>
 
-        <section className="rounded-[2rem] border border-white/10 bg-[#0b1320]/90 shadow-2xl shadow-black/30 backdrop-blur-xl">
+        <section className="flex flex-col rounded-[2rem] border border-white/10 bg-[#0b1320]/90 shadow-2xl shadow-black/30 backdrop-blur-xl h-full overflow-hidden">
           {isMockMode && (
             <div className="px-6 pt-4">
               <div className="inline-flex items-center gap-2 rounded-full bg-yellow-400/10 px-3 py-1 text-xs font-semibold text-amber-300">
@@ -290,29 +261,34 @@ const MentalHealthSupport: React.FC = () => {
                   <option value="gemini" className={fieldOptionClass}>
                     Gemini
                   </option>
+                  <option value="groq" className={fieldOptionClass}>
+                    Groq
+                  </option>
                 </select>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3 border-b border-white/10 px-6 py-4">
-            {[
-              "Feeling overwhelmed",
-              "Need a short grounding exercise",
-              "Talk about sleep",
-              "Plan next clinical step",
-            ].map((prompt) => (
-              <button
-                key={prompt}
-                onClick={() => setInput(prompt)}
-                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
+          {messages.length === 0 && (
+            <div className="flex flex-nowrap overflow-x-auto gap-3 border-b border-white/10 px-6 py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              {[
+                "Feeling overwhelmed",
+                "Need a short grounding exercise",
+                "Talk about sleep",
+                "Plan next clinical step",
+              ].map((prompt) => (
+                <button
+                  key={prompt}
+                  onClick={() => setInput(prompt)}
+                  className="whitespace-nowrap shrink-0 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          )}
 
-          <div className="max-h-[54vh] overflow-y-auto px-6 py-6">
+          <div className="flex-1 overflow-y-auto px-6 py-6">
             {messages.map((message, index) => (
               <div
                 key={message.id}
@@ -447,7 +423,7 @@ const MentalHealthSupport: React.FC = () => {
           </div>
         </section>
       </div>
-      {isVideoOpen && (
+      {isVideoOpen && createPortal(
         <div className={dialogOverlayClass}>
           <div className={dialogPanelClass}>
             <div className="mb-4 flex items-center justify-between">
@@ -468,11 +444,12 @@ const MentalHealthSupport: React.FC = () => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 title="Relaxation video"
-                className="w-full h-full"
+                className="w-full aspect-video"
               ></iframe>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   AlertCircle,
   ArrowUpRight,
@@ -68,24 +69,13 @@ const HealthPlans: React.FC = () => {
     setHealthPlan(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/HealthPlans`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const payload = await response.json().catch(() => null);
-        throw new Error(payload?.error || `Server error (${response.status})`);
-      }
-
-      const data = await response.json();
-      setHealthPlan(data.healthPlan);
-    } catch (err) {
+      const response = await axios.post(`${API_BASE_URL}/HealthPlans`, formData);
+      setHealthPlan(response.data.healthPlan);
+    } catch (err: any) {
       setError(
-        err instanceof Error
-          ? err.message
-          : "An error occurred while processing your request. Please try again.",
+        err.response?.data?.error ||
+          err.message ||
+          "An error occurred while processing your request. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -110,14 +100,6 @@ const HealthPlans: React.FC = () => {
             </p>
           </div>
 
-          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <PlanMetric title="Nutrition" value="Tailored" />
-              <PlanMetric title="Sleep" value="Structured" />
-              <PlanMetric title="Output" value="Clear" />
-              <PlanMetric title="Tone" value="Calm" />
-            </div>
-          </div>
         </section>
 
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
@@ -415,17 +397,7 @@ const Field: React.FC<{
   </div>
 );
 
-const PlanMetric: React.FC<{ title: string; value: string }> = ({
-  title,
-  value,
-}) => (
-  <div className="rounded-3xl border border-white/10 bg-[#0d1723] p-4">
-    <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
-      {title}
-    </div>
-    <div className="mt-2 text-2xl font-semibold text-white">{value}</div>
-  </div>
-);
+
 
 const InfoTile: React.FC<{ label: string; value: string }> = ({
   label,
