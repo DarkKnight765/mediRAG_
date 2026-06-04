@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   AlertCircle,
   ArrowUpRight,
@@ -56,23 +57,11 @@ const ImageAnalysisPage: React.FC = () => {
     if (file) formData.append("file", file);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/analyze-image`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const payload = await response.json().catch(() => null);
-        throw new Error(payload?.error || `Server error (${response.status})`);
-      }
-
-      const data: DiagnosisResult = await response.json();
-      setResult(data);
-    } catch (err) {
+      const response = await axios.post(`${API_BASE_URL}/analyze-image`, formData);
+      setResult(response.data);
+    } catch (err: any) {
       setError(
-        err instanceof Error
-          ? err.message
-          : "An error occurred while processing your request. Please try again.",
+        err.response?.data?.error || err.message || "An error occurred while processing your request. Please try again.",
       );
     } finally {
       setLoading(false);

@@ -15,7 +15,7 @@ export const alertPanelClass =
   "rounded-3xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200";
 
 export const dialogOverlayClass =
-  "fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6";
+  "fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-6 backdrop-blur-sm";
 
 export const dialogPanelClass =
   "w-full max-w-3xl rounded-[2rem] border border-white/10 bg-[#0b1320] p-4 shadow-2xl shadow-black/50";

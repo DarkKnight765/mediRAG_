@@ -316,6 +316,30 @@ const AppointmentScheduling: React.FC = () => {
                     </div>
                   </div>
                 </div>
+
+                <div className="mt-8 flex justify-center">
+                  <button
+                    onClick={() => {
+                      setIsSubmitted(false);
+                      setAppointment({
+                        date: "",
+                        time: "",
+                        name: "",
+                        email: "",
+                        phone: "",
+                        doctor: "",
+                        appointmentType: "",
+                        reason: "",
+                        symptoms: "",
+                        medicalHistory: "",
+                      });
+                    }}
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-6 py-3 text-sm font-semibold text-emerald-400 transition hover:bg-emerald-500/20 hover:text-emerald-300"
+                  >
+                    <Calendar className="h-4 w-4" />
+                    Book Another Appointment
+                  </button>
+                </div>
               </div>
             )}
           </section>
