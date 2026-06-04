@@ -42,6 +42,8 @@ jobs:
           GEMINI_API_KEY: dummy-key
           PORT: 3001
           RUNTIME_MODEL_MODE: mock
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+          DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
         run: node -e "require('./src/app'); console.log('backend app loaded')"
 
       - name: Run backend integration tests
@@ -50,6 +52,8 @@ jobs:
           GEMINI_API_KEY: dummy-key
           PORT: 3001
           RUNTIME_MODEL_MODE: mock
+          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+          DIRECT_URL: postgresql://dummy:dummy@localhost:5432/dummy
         run: |
           nohup npm run mock-model > mock.log 2>&1 &
           sleep 1
