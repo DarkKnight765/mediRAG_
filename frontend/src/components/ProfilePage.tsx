@@ -5,7 +5,6 @@ import {
   User,
   Calendar,
   Activity,
-  MessageSquare,
   Clock,
   ChevronRight,
   Shield,
@@ -30,7 +29,7 @@ interface ProfileData {
 }
 
 const ProfilePage: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
