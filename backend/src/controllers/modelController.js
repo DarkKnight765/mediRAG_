@@ -4,7 +4,11 @@ const env = require("../config/env");
 exports.health = async (req, res) => {
   const runtime = require("../config/runtime");
   const localUrl = runtime.getLocalModelUrl();
-  const statuses = { localModel: "not-configured", gemini: "not-configured" };
+  const statuses = {
+    localModel: "not-configured",
+    gemini: "not-configured",
+    groq: "not-configured",
+  };
 
   if (localUrl) {
     try {
@@ -32,7 +36,20 @@ exports.health = async (req, res) => {
     statuses.gemini = "not-configured";
   }
 
-  res.json({ status: "ok", models: statuses });
+  // Check Groq availability by verifying the presence of the client
+  try {
+    const groqClient = require("../config/groq");
+    statuses.groq = groqClient ? "ok" : "not-configured";
+  } catch (e) {
+    statuses.groq = "not-configured";
+  }
+
+  res.json({
+    status: "ok",
+    mode: runtime.getMode(),
+    models: statuses,
+    availableModes: ["auto", "mock", "gemini", "groq"],
+  });
 };
 
 exports.setMode = async (req, res) => {
@@ -42,7 +59,7 @@ exports.setMode = async (req, res) => {
     if (!mode)
       return res
         .status(400)
-        .json({ error: "mode required (auto|mock|gemini)" });
+        .json({ error: "mode required (auto|mock|gemini|groq)" });
     const ok = runtime.setMode(mode);
     if (!ok) return res.status(400).json({ error: "invalid mode" });
     return res.json({ status: "ok", mode: runtime.getMode() });

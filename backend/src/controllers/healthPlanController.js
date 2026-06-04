@@ -1,5 +1,21 @@
 const aiService = require("../services/aiService");
 const { recommendHealthPlan } = require("../services/healthPlanRecommender");
+const db = require("../config/db");
+
+async function saveHealthPlanToDB(userId, inputData, planResult, engine) {
+  try {
+    await db.healthPlan.create({
+      data: {
+        userId,
+        input: JSON.stringify(inputData),
+        result: JSON.stringify(planResult),
+        engine,
+      },
+    });
+  } catch (err) {
+    console.error("Failed to save health plan to DB:", err);
+  }
+}
 
 function extractJsonObject(text) {
   if (typeof text !== "string") {
@@ -116,12 +132,14 @@ exports.generateHealthPlan = async (req, res) => {
 
     if (mlHealthPlan) {
       console.log("ML recommender selected health plan:", mlHealthPlan);
+      const finalPlan = sanitizeHealthPlanForRestrictions(
+        mlHealthPlan,
+        sampleData.dietaryRestrictions,
+      );
+      await saveHealthPlanToDB(req.user.id, sampleData, finalPlan, "ML Recommender");
       return res.json({
         message: "Health plan generated successfully!",
-        healthPlan: sanitizeHealthPlanForRestrictions(
-          mlHealthPlan,
-          sampleData.dietaryRestrictions,
-        ),
+        healthPlan: finalPlan,
       });
     }
 
@@ -137,56 +155,61 @@ exports.generateHealthPlan = async (req, res) => {
 
     if (parsedHealthPlan) {
       console.log("Generated health plan:", parsedHealthPlan);
-
+      const finalPlan = sanitizeHealthPlanForRestrictions(
+        parsedHealthPlan,
+        sampleData.dietaryRestrictions,
+      );
+      await saveHealthPlanToDB(req.user.id, sampleData, finalPlan, "LLM");
       return res.json({
         message: "Health plan generated successfully!",
-        healthPlan: sanitizeHealthPlanForRestrictions(
-          parsedHealthPlan,
-          sampleData.dietaryRestrictions,
-        ),
+        healthPlan: finalPlan,
       });
     }
 
     console.warn("Falling back to default structured health plan.");
 
-    return res.json({
-      message: "Health plan generated successfully!",
-      healthPlan: sanitizeHealthPlanForRestrictions(
-        {
-          diet_plan: {
-            caloric_intake: 2200,
-            macronutrients: {
-              carbohydrates: "45%",
-              proteins: "30%",
-              fats: "25%",
-            },
-            meal_plan: {
-              breakfast: {
-                time: "8:00 AM",
-                items: ["Oatmeal", "Greek yogurt", "Berries"],
-              },
-              lunch: {
-                time: "1:00 PM",
-                items: ["Grilled chicken bowl", "Brown rice", "Leafy greens"],
-              },
-              dinner: {
-                time: "7:00 PM",
-                items: ["Salmon", "Roasted vegetables", "Quinoa"],
-              },
-            },
+    const fallbackPlan = sanitizeHealthPlanForRestrictions(
+      {
+        diet_plan: {
+          caloric_intake: 2200,
+          macronutrients: {
+            carbohydrates: "45%",
+            proteins: "30%",
+            fats: "25%",
           },
-          sleep_routine: {
-            bedtime: "10:30 PM",
-            wake_time: "6:30 AM",
-            pre_sleep_activities: [
-              "Reduce screen time 60 minutes before bed",
-              "Light stretching or breathing exercises",
-              "Keep the room cool and dark",
-            ],
+          meal_plan: {
+            breakfast: {
+              time: "8:00 AM",
+              items: ["Oatmeal", "Greek yogurt", "Berries"],
+            },
+            lunch: {
+              time: "1:00 PM",
+              items: ["Grilled chicken bowl", "Brown rice", "Leafy greens"],
+            },
+            dinner: {
+              time: "7:00 PM",
+              items: ["Salmon", "Roasted vegetables", "Quinoa"],
+            },
           },
         },
-        sampleData.dietaryRestrictions,
-      ),
+        sleep_routine: {
+          bedtime: "10:30 PM",
+          wake_time: "6:30 AM",
+          pre_sleep_activities: [
+            "Reduce screen time 60 minutes before bed",
+            "Light stretching or breathing exercises",
+            "Keep the room cool and dark",
+          ],
+        },
+      },
+      sampleData.dietaryRestrictions,
+    );
+
+    await saveHealthPlanToDB(req.user.id, sampleData, fallbackPlan, "Fallback");
+
+    return res.json({
+      message: "Health plan generated successfully!",
+      healthPlan: fallbackPlan,
     });
   } catch (error) {
     console.error("Error generating health plan:", error);

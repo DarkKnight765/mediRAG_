@@ -33,6 +33,11 @@ module.exports = {
     return process.env.GEMINI_API_KEY || null;
   })(),
   modelName: process.env.MODEL_NAME || "gemini-2.0-flash",
+  // Groq API configuration (optional, like Gemini)
+  groqKey: process.env.GROQ_API_KEY || null,
+  groqModel: process.env.GROQ_MODEL || "llama-3.3-70b-versatile",
+  // JWT secret for user authentication
+  jwtSecret: process.env.JWT_SECRET || "medirag-dev-secret-change-in-production",
   corsOrigins: (process.env.CORS_ORIGIN || defaultCorsOrigins.join(","))
     .split(",")
     .map((origin) => origin.trim())

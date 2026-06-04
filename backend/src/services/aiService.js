@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const genAI = require("../config/gemini");
+const groqClient = require("../config/groq");
 const env = require("../config/env");
 const runtime = require("../config/runtime");
 
@@ -14,9 +15,89 @@ function fileToGenerativePart(path, mimeType) {
   };
 }
 
+// ──────────────────────────────────────────────────
+// Groq helper functions
+// ──────────────────────────────────────────────────
+
+async function callGroq(prompt, systemInstruction) {
+  if (!groqClient) return null;
+  try {
+    const messages = [];
+    if (systemInstruction) {
+      messages.push({ role: "system", content: systemInstruction });
+    }
+    messages.push({ role: "user", content: prompt });
+
+    const completion = await groqClient.chat.completions.create({
+      model: env.groqModel,
+      messages,
+      temperature: 0.3,
+      max_tokens: 1000,
+    });
+
+    return completion.choices?.[0]?.message?.content || null;
+  } catch (err) {
+    console.error("Groq API call failed:", err.message || err);
+    return null;
+  }
+}
+
+async function callGroqChat(conversationMessages, systemInstruction) {
+  if (!groqClient) return null;
+  try {
+    const messages = [];
+    if (systemInstruction) {
+      messages.push({ role: "system", content: systemInstruction });
+    }
+    // Map conversation history to Groq format
+    for (const msg of conversationMessages) {
+      messages.push({
+        role: msg.role === "model" ? "assistant" : msg.role,
+        content: msg.text || msg.content,
+      });
+    }
+
+    const completion = await groqClient.chat.completions.create({
+      model: env.groqModel,
+      messages,
+      temperature: 0.7,
+      max_tokens: 1000,
+    });
+
+    return completion.choices?.[0]?.message?.content || null;
+  } catch (err) {
+    console.error("Groq chat API call failed:", err.message || err);
+    return null;
+  }
+}
+
+// ──────────────────────────────────────────────────
+// Image analysis
+// ──────────────────────────────────────────────────
+
 async function analyzeImageWithAI(imagePath) {
+  const mode = runtime.getMode();
+
+  // Groq mode: text-only analysis (Groq doesn't support multimodal yet)
+  if (mode === "groq" || (mode === "auto" && !genAI && groqClient)) {
+    const result = await callGroq(
+      [
+        "You are an expert radiology assistant.",
+        "A user uploaded an image or PDF for analysis.",
+        "Return plain text with these lines exactly:",
+        "Diagnosis: ...",
+        "Confidence: ...",
+        "Additional Findings: ...",
+        "Recommended Actions: ...",
+        `File name: ${path.basename(imagePath)}`,
+      ].join(" "),
+      "You are an expert radiologist analyzing medical images.",
+    );
+    if (result) return result;
+  }
+
   // Prefer Gemini for multimodal image analysis. Ensure genAI is available.
-  if (!genAI) {
+  if (!genAI || mode === "mock") {
     const localUrl = runtime.getLocalModelUrl();
 
     if (localUrl) {
@@ -58,6 +139,24 @@ async function analyzeImageWithAI(imagePath) {
       }
     }
 
+    // If in groq mode but Groq failed, try Groq as a last resort
+    if (mode !== "groq") {
+      const groqResult = await callGroq(
+        [
+          "You are an expert radiology assistant.",
+          "A user uploaded an image or PDF for analysis.",
+          "Return plain text with these lines exactly:",
+          "Diagnosis: ...",
+          "Confidence: ...",
+          "Additional Findings: ...",
+          "Recommended Actions: ...",
+          `File name: ${path.basename(imagePath)}`,
+        ].join(" "),
+        "You are an expert radiologist analyzing medical images.",
+      );
+      if (groqResult) return groqResult;
+    }
+
     return [
       "Diagnosis: Unable to perform multimodal analysis in the current environment",
       "Confidence: 25%",
@@ -86,6 +185,22 @@ async function analyzeImageWithAI(imagePath) {
       "Gemini image analysis failed, falling back:",
       err.message || err,
     );
+
+    // Try Groq as fallback
+    const groqResult = await callGroq(
+      [
+        "You are an expert radiology assistant.",
+        "A user uploaded an image or PDF for analysis.",
+        "Return plain text with these lines exactly:",
+        "Diagnosis: ...",
+        "Confidence: ...",
+        "Additional Findings: ...",
+        "Recommended Actions: ...",
+        `File name: ${path.basename(imagePath)}`,
+      ].join(" "),
+      "You are an expert radiologist analyzing medical images.",
+    );
+    if (groqResult) return groqResult;
 
     const localUrl = runtime.getLocalModelUrl();
     if (localUrl) {
@@ -136,11 +251,25 @@ async function analyzeImageWithAI(imagePath) {
   }
 }
 
+// ──────────────────────────────────────────────────
+// Health plan generation
+// ──────────────────────────────────────────────────
+
 async function generateHealthPlan(prompt) {
   const fallbackPlan = buildFallbackHealthPlan({ source: "fallback" });
+  const mode = runtime.getMode();
+
+  // Groq mode: call Groq directly
+  if (mode === "groq") {
+    const result = await callGroq(
+      prompt,
+      "You are a helpful assistant specialized in creating personalized health plans.",
+    );
+    if (result) return result;
+    return JSON.stringify(fallbackPlan);
+  }
 
   // If a local model server is available, call it for development.
-  const runtime = require("../config/runtime");
   const localUrl = runtime.getLocalModelUrl();
   if (localUrl) {
     try {
@@ -162,10 +291,19 @@ async function generateHealthPlan(prompt) {
       }
     } catch (err) {
       console.error(
-        "Local model request failed, falling back to Gemini:",
+        "Local model request failed, falling back:",
         err.message || err,
       );
     }
+  }
+
+  // Auto mode: try Groq if available
+  if (mode === "auto" && groqClient) {
+    const groqResult = await callGroq(
+      prompt,
+      "You are a helpful assistant specialized in creating personalized health plans.",
+    );
+    if (groqResult) return groqResult;
   }
 
   if (!genAI) {
@@ -194,9 +332,12 @@ async function generateHealthPlan(prompt) {
   }
 }
 
+// ──────────────────────────────────────────────────
+// Chat with assistant (mental health)
+// ──────────────────────────────────────────────────
+
 async function chatWithAssistant(conversationHistory) {
-  // If local model server is configured, call its chat endpoint with the last message
-  const runtime = require("../config/runtime");
+  const mode = runtime.getMode();
   const localUrl = runtime.getLocalModelUrl();
   const history = conversationHistory
     .filter((msg) => msg.role !== "system")
@@ -204,6 +345,16 @@ async function chatWithAssistant(conversationHistory) {
       role: msg.role === "assistant" ? "model" : "user",
       text: msg.content,
     }));
+
+  // Groq mode: call Groq directly
+  if (mode === "groq") {
+    const result = await callGroqChat(
+      history,
+      "You are a helpful mental health assistant. Provide empathetic and supportive responses to users seeking mental health support.",
+    );
+    if (result) return result;
+    throw new Error("Groq chat failed. Check your GROQ_API_KEY.");
+  }
 
   if (localUrl) {
     try {
@@ -224,15 +375,24 @@ async function chatWithAssistant(conversationHistory) {
       }
     } catch (err) {
       console.error(
-        "Local chat request failed, falling back to Gemini:",
+        "Local chat request failed, falling back:",
         err.message || err,
       );
     }
   }
 
+  // Auto mode: try Groq if available
+  if (mode === "auto" && groqClient) {
+    const groqResult = await callGroqChat(
+      history,
+      "You are a helpful mental health assistant. Provide empathetic and supportive responses to users seeking mental health support.",
+    );
+    if (groqResult) return groqResult;
+  }
+
   if (!genAI) {
     throw new Error(
-      "No model available for chat. Set LOCAL_MODEL_URL or GEMINI_API_KEY.",
+      "No model available for chat. Set LOCAL_MODEL_URL, GROQ_API_KEY, or GEMINI_API_KEY.",
     );
   }
 
@@ -255,7 +415,22 @@ async function chatWithAssistant(conversationHistory) {
   return result.response.text();
 }
 
+// ──────────────────────────────────────────────────
+// Test assistant
+// ──────────────────────────────────────────────────
+
 async function testAssistant() {
+  const mode = runtime.getMode();
+
+  // Groq mode
+  if (mode === "groq") {
+    const result = await callGroq(
+      "What is the capital of France?",
+      "You are a helpful assistant.",
+    );
+    if (result) return result;
+  }
+
   const localUrl = runtime.getLocalModelUrl();
   if (localUrl) {
     try {
@@ -275,15 +450,24 @@ async function testAssistant() {
       }
     } catch (err) {
       console.error(
-        "Local model request failed for testAssistant, falling back to Gemini:",
+        "Local model request failed for testAssistant, falling back:",
         err.message || err,
       );
     }
   }
 
+  // Auto mode: try Groq
+  if (mode === "auto" && groqClient) {
+    const groqResult = await callGroq(
+      "What is the capital of France?",
+      "You are a helpful assistant.",
+    );
+    if (groqResult) return groqResult;
+  }
+
   if (!genAI) {
     throw new Error(
-      "No model available for testAssistant. Set LOCAL_MODEL_URL or GEMINI_API_KEY.",
+      "No model available for testAssistant. Set LOCAL_MODEL_URL, GROQ_API_KEY, or GEMINI_API_KEY.",
     );
   }
 
