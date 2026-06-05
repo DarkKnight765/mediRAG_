@@ -15,6 +15,7 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
 import ProfilePage from "./components/ProfilePage";
+import DoctorProfile from "./components/DoctorProfile";
 import SiteLayout from "./components/SiteLayout";
 
 const App: React.FC = () => {
@@ -54,6 +55,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <AppointmentScheduling />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/doctors/:placeId"
+              element={
+                <ProtectedRoute>
+                  <DoctorProfile />
                 </ProtectedRoute>
               }
             />

@@ -42,5 +42,15 @@ module.exports = {
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean),
+  smtpHost: process.env.SMTP_HOST || null,
+  smtpPort: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587,
+  smtpUser: process.env.SMTP_USER || null,
+  smtpPass: process.env.SMTP_PASS || null,
+  smtpFrom: process.env.SMTP_FROM || null,
+  googlePlacesApiKey: process.env.GOOGLE_PLACES_API_KEY || null,
+  fast2smsApiKey: process.env.FAST2SMS_API_KEY || null,
+  twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || null,
+  twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || null,
+  twilioWhatsAppFrom: process.env.TWILIO_WHATSAPP_FROM || null,
   requireEnv,
 };
