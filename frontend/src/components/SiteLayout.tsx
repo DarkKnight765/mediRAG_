@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../api/config";
 import { useAuth } from "./AuthContext";
@@ -31,9 +31,13 @@ const MODEL_MODES = [
   { value: "groq", label: "Groq", desc: "Fast inference" },
 ];
 
+// Pages where the AI model selector should be visible
+const AI_FEATURE_PATHS = ["/xray-diagnosis", "/health-plans", "/mental-health"];
+
 const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modelMode, setModelMode] = useState("auto");
   const [showModelMenu, setShowModelMenu] = useState(false);
@@ -63,6 +67,7 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   const currentMode = MODEL_MODES.find((m) => m.value === modelMode);
+  const showModelSelector = AI_FEATURE_PATHS.some((p) => location.pathname.startsWith(p));
 
   return (
     <div className="min-h-screen bg-[#071018] text-slate-100">
@@ -107,8 +112,8 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </nav>
 
           <div className="flex items-center gap-3">
-            {/* Model Mode Selector */}
-            <div className="relative hidden sm:block">
+            {/* Model Mode Selector — only on AI feature pages */}
+            {showModelSelector && <div className="relative hidden sm:block">
               <button
                 type="button"
                 onClick={() => setShowModelMenu(!showModelMenu)}
@@ -157,7 +162,7 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   </div>
                 </>
               )}
-            </div>
+            </div>}
 
             {/* Auth Buttons */}
             {user ? (
@@ -166,7 +171,11 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   to="/profile"
                   className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-300 transition hover:bg-white/10 hover:text-white"
                 >
-                  <User className="h-3.5 w-3.5" />
+                  {user.avatar ? (
+                    <img src={user.avatar} alt="Avatar" className="h-4 w-4 rounded-full" />
+                  ) : (
+                    <User className="h-3.5 w-3.5" />
+                  )}
                   <span className="max-w-[100px] truncate">
                     {user.name || user.email}
                   </span>
@@ -235,8 +244,8 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
               <div className="my-3 border-t border-white/5" />
 
-              {/* Mobile model mode selector */}
-              <div className="px-4 py-2">
+              {/* Mobile model mode selector — only on AI feature pages */}
+              {showModelSelector && <div className="px-4 py-2">
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
                   AI Model
                 </p>
@@ -255,7 +264,7 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     </button>
                   ))}
                 </div>
-              </div>
+              </div>}
 
               <div className="my-3 border-t border-white/5" />
 

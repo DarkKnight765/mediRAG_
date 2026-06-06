@@ -6,6 +6,7 @@ interface User {
   id: number;
   name: string | null;
   email: string;
+  avatar?: string | null;
 }
 
 interface AuthContextType {
@@ -14,6 +15,7 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
+  googleLogin: (credential: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -85,8 +87,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem("medirag_token", newToken);
   };
 
+  const googleLogin = async (credential: string) => {
+    const res = await axios.post(`${API_BASE_URL}/auth/google`, { credential });
+    const { token: newToken, user: newUser } = res.data;
+    setToken(newToken);
+    setUser(newUser);
+    localStorage.setItem("medirag_token", newToken);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, signup, googleLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );

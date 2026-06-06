@@ -52,5 +52,6 @@ module.exports = {
   twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || null,
   twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || null,
   twilioWhatsAppFrom: process.env.TWILIO_WHATSAPP_FROM || null,
+  googleClientId: process.env.GOOGLE_CLIENT_ID || null,
   requireEnv,
 };

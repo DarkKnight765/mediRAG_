@@ -1,4 +1,5 @@
 import React from "react";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./styles/animations.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./components/AuthContext";
@@ -19,9 +20,12 @@ import DoctorProfile from "./components/DoctorProfile";
 import SiteLayout from "./components/SiteLayout";
 
 const App: React.FC = () => {
+  const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID || "PASTE_YOUR_GOOGLE_CLIENT_ID_HERE";
+
   return (
-    <Router>
-      <AuthProvider>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <Router>
+        <AuthProvider>
         <SiteLayout>
           <Routes>
             {/* Public routes */}
@@ -86,6 +90,7 @@ const App: React.FC = () => {
         </SiteLayout>
       </AuthProvider>
     </Router>
+  </GoogleOAuthProvider>
   );
 };
 

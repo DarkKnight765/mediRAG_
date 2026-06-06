@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import { GoogleLogin } from "@react-oauth/google";
 import {
   HeartPulse,
   UserPlus,
@@ -11,7 +12,7 @@ import {
 } from "lucide-react";
 
 const SignupPage: React.FC = () => {
-  const { signup } = useAuth();
+  const { signup, googleLogin } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -206,6 +207,41 @@ const SignupPage: React.FC = () => {
               )}
             </button>
           </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-white/10"></div>
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-[#0f172a] px-2 text-slate-400">Or continue with</span>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-center">
+              <GoogleLogin
+                onSuccess={async (credentialResponse) => {
+                  if (credentialResponse.credential) {
+                    try {
+                      setLoading(true);
+                      await googleLogin(credentialResponse.credential);
+                      navigate("/");
+                    } catch (err: any) {
+                      setError(err.response?.data?.error || "Google signup failed.");
+                    } finally {
+                      setLoading(false);
+                    }
+                  }
+                }}
+                onError={() => {
+                  setError("Google signup failed. Please try again.");
+                }}
+                useOneTap
+                theme="filled_black"
+                shape="pill"
+              />
+            </div>
+          </div>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-400">
