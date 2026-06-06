@@ -339,6 +339,7 @@ async function generateHealthPlan(prompt) {
 async function chatWithAssistant(conversationHistory) {
   const mode = runtime.getMode();
   const localUrl = runtime.getLocalModelUrl();
+  console.log("[DEBUG] chatWithAssistant mode:", mode, "localUrl:", localUrl);
   const history = conversationHistory
     .filter((msg) => msg.role !== "system")
     .map((msg) => ({
@@ -362,16 +363,21 @@ async function chatWithAssistant(conversationHistory) {
       try {
         axios = require("axios");
       } catch (e) {
+        console.error("[DEBUG] axios require failed:", e);
         axios = null;
       }
       if (axios) {
         const last = history[history.length - 1]?.text || "";
+        console.log("[DEBUG] Calling mock server with history length:", history.length);
         const res = await doPostWithRetry(
           axios,
           `${localUrl.replace(/\/$/, "")}/chat`,
           { message: last, history },
         );
+        console.log("[DEBUG] Mock server responded:", res?.data);
         return res.data.text;
+      } else {
+        console.log("[DEBUG] axios is null!");
       }
     } catch (err) {
       console.error(
@@ -391,6 +397,7 @@ async function chatWithAssistant(conversationHistory) {
   }
 
   if (!genAI) {
+    console.log("[DEBUG] genAI is null, throwing error.");
     throw new Error(
       "No model available for chat. Set LOCAL_MODEL_URL, GROQ_API_KEY, or GEMINI_API_KEY.",
     );
