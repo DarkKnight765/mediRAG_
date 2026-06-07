@@ -5,17 +5,7 @@ const env = require("./config/env");
 
 const app = express();
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || env.corsOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS"));
-    },
-  }),
-);
+app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
 app.use("/api", routes);
