@@ -1,6 +1,12 @@
 # MediRAG
 
-MediRAG is a healthcare workflow app for patient-facing AI assistance, structured health planning, image/document review, appointment intake, and behavioral support. The current UI uses a dark clinical theme with shared form styling across all pages.
+MediRAG is a healthcare workflow app for patient-facing AI assistance, structured health planning, image/document review, appointment intake, and behavioral support. 
+
+## Live Deployment
+
+The project is actively deployed and hosted on Render:
+- **Frontend**: [https://medirag-frontend.onrender.com](https://medirag-frontend.onrender.com)
+- **Backend API**: [https://medirag-backend-lrek.onrender.com](https://medirag-backend-lrek.onrender.com)
 
 ## Overview
 
@@ -9,8 +15,9 @@ The platform is split into a React frontend and Node.js backend with runtime mod
 - `auto` mode prefers local model access when available
 - `mock` mode forces deterministic local responses for development and CI
 - `gemini` mode uses Google Gemini when quota and billing are available
+- `groq` mode uses ultra-fast open-source models via the Groq API
 
-The backend also exposes health and mode endpoints so the UI can show current model status and allow switching at runtime.
+The application features full user authentication via **Google OAuth** and securely stores data in a **PostgreSQL** database hosted on Supabase, managed via Prisma ORM.
 
 ## Current UI
 
@@ -41,8 +48,6 @@ All input surfaces use a shared dark form system for consistency.
 
 ![Mental health support screen](./Images/MentalHealth-new.png)
 
-Other pages follow the same UI system and are available in the app, but only these three screenshots are shown here to keep the README concise.
-
 ## Architecture
 
 ```mermaid
@@ -50,10 +55,11 @@ flowchart LR
   U[User] --> F[React Frontend]
   F --> B[Express Backend]
   B --> M[Runtime model switch]
-  M --> G[Gemini]
+  M --> G[Gemini API]
+  M --> Q[Groq API]
   M --> L[Local mock model]
-  L --> O[Optional Ollama proxy]
-  B --> DB[(PostgreSQL)]
+  B --> Auth[Google OAuth]
+  B --> DB[(Supabase PostgreSQL)]
 ```
 
 ## Tech Stack
@@ -61,34 +67,36 @@ flowchart LR
 | Layer           | Technologies                                     |
 | --------------- | ------------------------------------------------ |
 | Frontend        | React, TypeScript, React Router, Tailwind CSS    |
-| Backend         | Node.js, Express                                 |
-| AI              | Gemini, local mock server, optional Ollama proxy |
+| Backend         | Node.js, Express, Prisma ORM                     |
+| Database        | PostgreSQL (Supabase)                            |
+| Authentication  | Google OAuth 2.0, JWT                            |
+| AI Models       | Gemini, Groq (Llama), local mock server          |
 | File processing | Multer, pdf-img-convert                          |
-| HTTP            | Axios                                            |
-| UI icons        | Lucide React                                     |
+| Hosting         | Render                                           |
 
 ## Key Features
 
-### Image and document review
+### Authentication & Profiles
+- Secure Sign-in with Google OAuth
+- Traditional Email/Password registration
+- Secure JWT-based session management
 
+### Image and Document Review
 - Upload X-ray images or PDFs
 - Receive structured findings with confidence and next steps
 - Works in Gemini mode or local mock mode for development
 
-### Health plans
-
+### Health Plans
 - Collect age, weight, height, activity level, dietary restrictions, and sleep concerns
 - Generate diet and sleep guidance
 - Server-side restriction guardrails prevent incompatible food suggestions from being returned
 
-### Appointment booking
-
+### Appointment Booking
 - Book a medical appointment with clinician and visit type selection
 - Capture reason, symptoms, and medical history
-- Confirmation UI keeps the flow clear and consistent
+- Saved directly to the PostgreSQL database
 
-### Mental health support
-
+### Mental Health Support
 - Chat-based support with runtime mode control
 - Auto-scroll to newest response
 - Uses the same visual language as the rest of the app
@@ -98,21 +106,25 @@ flowchart LR
 Create `backend/.env` with values like:
 
 ```env
-DATABASE_URL=postgres://medirag:medirag@localhost:5432/medirag
-GEMINI_API_KEY=your_key_here
-GEMINI_API_KEY_FILE=
-LOCAL_MODEL_URL=http://localhost:8000
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.2:3b
-MODEL_NAME=gemini-2.0-flash
+DATABASE_URL="postgresql://postgres.[YOUR-ID]:[PASSWORD]@aws-0-us-west-1.pooler.supabase.com:6543/postgres"
+DIRECT_URL="postgresql://postgres.[YOUR-ID]:[PASSWORD]@aws-0-us-west-1.pooler.supabase.com:5432/postgres"
+
+JWT_SECRET="your-secure-jwt-secret"
+GOOGLE_CLIENT_ID="your-google-oauth-client-id"
+
+GEMINI_API_KEY="your-gemini-key"
+GROQ_API_KEY="your-groq-key"
+
+CORS_ORIGIN="http://localhost:3000"
 PORT=3001
 ```
 
-Notes:
+Create `frontend/.env` with:
 
-- `GEMINI_API_KEY` is optional at startup, but required for Gemini mode to work.
-- `LOCAL_MODEL_URL` points the backend to the local mock server.
-- `OLLAMA_BASE_URL` and `OLLAMA_MODEL` are optional and let the mock server proxy to Ollama when available.
+```env
+REACT_APP_API_URL=http://localhost:3001/api
+REACT_APP_GOOGLE_CLIENT_ID=your-google-oauth-client-id
+```
 
 ## Run Locally
 
@@ -121,7 +133,8 @@ Notes:
 ```bash
 cd backend
 npm install
-npm run mock-model
+npx prisma generate
+npx prisma db push
 npm run dev
 ```
 
@@ -135,44 +148,18 @@ npm start
 
 Open the app at `http://localhost:3000`.
 
-### Full stack with Docker
-
-```bash
-docker-compose up --build
-```
-
-## API Routes
-
-| Route                     | Method   | Purpose                        |
-| ------------------------- | -------- | ------------------------------ |
-| `/api/analyze-image`      | POST     | Analyze images or PDFs         |
-| `/api/HealthPlans`        | POST     | Generate a health plan         |
-| `/api/mental-health-chat` | POST     | Chat support                   |
-| `/api/test`               | GET      | Backend connectivity check     |
-| `/api/appointments`       | Various  | Appointment CRUD               |
-| `/api/model/health`       | GET      | Model availability status      |
-| `/api/model/mode`         | GET/POST | Read or set runtime model mode |
-
-## Model Behavior
-
-- Gemini is used when quota and billing allow it.
-- Mock mode is the safest default for development and CI.
-- Ollama can be used as the local model backend when configured.
-- The health-plan controller applies a dietary restriction safety pass before returning results.
-
 ## Current Status
 
-- The UI has been restyled with a shared dark healthcare theme.
-- The backend supports runtime model switching and health checks.
-- The README screenshots now match the current app pages.
-- Health-plan responses are guarded against non-compliant food suggestions.
+- **Fully Deployed**: Hosted successfully on Render.
+- **Persistent Data**: Integrated PostgreSQL database via Supabase.
+- **Auth Integrated**: Google Sign-In and standard authentication workflows are complete.
+- **AI Models**: Support for Gemini and ultra-fast Groq APIs added.
 
 ## Future Improvements
 
-- Add a persistent database layer for appointments, user profiles, chat history, and health-plan records.
-- Add user authentication so patients and clinicians can sign in securely and access the right workflow.
 - Expand role-based access control for patients, clinicians, and administrators.
 - Add more automated tests around model routing, compliance guardrails, and form validation.
+- Add real-time chat functionality for clinician-patient communication.
 
 ## Contributing
 
