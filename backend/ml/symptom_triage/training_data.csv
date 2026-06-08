@@ -1,0 +1,172 @@
+symptom_text,specialty
+"chest pain, shortness of breath, palpitations",Cardiology
+"sharp chest pain radiating to left arm, sweating",Cardiology
+"irregular heartbeat, dizziness when standing up",Cardiology
+"high blood pressure, headaches, chest tightness",Cardiology
+"swollen ankles, fatigue, difficulty breathing while lying down",Cardiology
+"racing heart, feeling like heart is skipping beats",Cardiology
+"chest pressure during exercise, gets better with rest",Cardiology
+"persistent high blood pressure despite medication",Cardiology
+"fainting spells, lightheadedness, rapid pulse",Cardiology
+"pain in chest when taking deep breaths, shortness of breath",Cardiology
+"leg pain after walking short distances, cold feet",Cardiology
+"heart murmur detected, occasional chest discomfort",Cardiology
+"severe headache, worst headache of my life, stiff neck",Neurology
+"numbness and tingling in hands and feet",Neurology
+"recurring migraines with aura and vision changes",Neurology
+"tremors in hands, difficulty with fine motor tasks",Neurology
+"seizures, loss of consciousness, confusion after episodes",Neurology
+"memory loss, difficulty concentrating, confusion",Neurology
+"weakness on one side of body, slurred speech",Neurology
+"chronic dizziness, balance problems, vertigo",Neurology
+"sharp shooting pain down the leg, lower back pain",Neurology
+"facial drooping, difficulty speaking, sudden onset",Neurology
+"persistent pins and needles, burning sensation in feet",Neurology
+"involuntary muscle movements, difficulty walking",Neurology
+"knee pain, swelling after injury, difficulty bending",Orthopedics
+"lower back pain radiating to hip, stiffness in morning",Orthopedics
+"shoulder pain, cannot raise arm above head",Orthopedics
+"wrist pain, swelling, possible fracture after fall",Orthopedics
+"joint pain in multiple joints, morning stiffness lasting hours",Orthopedics
+"ankle sprain, swelling, bruising, difficulty walking",Orthopedics
+"chronic neck pain, reduced range of motion",Orthopedics
+"hip pain, difficulty walking, grinding sensation",Orthopedics
+"elbow pain, tennis elbow symptoms, pain gripping objects",Orthopedics
+"foot pain, heel pain especially in morning, plantar fasciitis",Orthopedics
+"broken bone, visible deformity, severe pain after accident",Orthopedics
+"clicking sound in jaw, difficulty opening mouth wide",Orthopedics
+"skin rash, itching, red patches on arms and legs",Dermatology
+"acne breakouts, oily skin, cystic pimples on face",Dermatology
+"mole changed color and size, irregular borders",Dermatology
+"dry flaky skin, eczema patches, constant itching",Dermatology
+"hair loss, thinning hair, bald patches on scalp",Dermatology
+"fungal infection between toes, peeling skin, itching",Dermatology
+"psoriasis flare-up, silvery scales on elbows and knees",Dermatology
+"hives, swollen welts on skin, allergic reaction",Dermatology
+"warts on hands, spreading to other fingers",Dermatology
+"sunburn blisters, peeling skin, painful redness",Dermatology
+"dark spots on skin, uneven skin tone, hyperpigmentation",Dermatology
+"chronic skin infection, boils, recurring abscesses",Dermatology
+"stomach pain, bloating, gas after eating",Gastroenterology
+"acid reflux, heartburn, burning sensation in throat",Gastroenterology
+"diarrhea for more than two weeks, weight loss",Gastroenterology
+"constipation, hard stools, abdominal discomfort",Gastroenterology
+"blood in stool, rectal bleeding, dark tarry stools",Gastroenterology
+"nausea, vomiting, abdominal cramps after meals",Gastroenterology
+"difficulty swallowing, food getting stuck in throat",Gastroenterology
+"jaundice, yellowing of skin and eyes, dark urine",Gastroenterology
+"abdominal pain upper right side, worse after fatty food",Gastroenterology
+"chronic bloating, alternating diarrhea and constipation, IBS symptoms",Gastroenterology
+"loss of appetite, unexplained weight loss, fatigue",Gastroenterology
+"liver pain, swollen abdomen, history of alcohol use",Gastroenterology
+"persistent cough for over three weeks, phlegm production",Pulmonology
+"wheezing, shortness of breath, asthma symptoms",Pulmonology
+"difficulty breathing, tightness in chest, worsens at night",Pulmonology
+"coughing up blood, chest pain, weight loss",Pulmonology
+"sleep apnea, snoring, daytime sleepiness",Pulmonology
+"chronic bronchitis, productive cough, recurrent infections",Pulmonology
+"exposure to asbestos, shortness of breath, chest tightness",Pulmonology
+"allergic asthma, triggered by dust and pollen",Pulmonology
+"pneumonia symptoms, fever, cough, difficulty breathing",Pulmonology
+"chronic obstructive pulmonary disease, progressive breathlessness",Pulmonology
+"rapid shallow breathing, oxygen saturation dropping",Pulmonology
+"recurrent lung infections, thick mucus production",Pulmonology
+"ear pain, hearing loss, ringing in ears",ENT
+"sore throat, difficulty swallowing, swollen tonsils",ENT
+"chronic sinusitis, facial pain, nasal congestion",ENT
+"nosebleeds, frequent and heavy, dry nasal passages",ENT
+"hoarse voice, voice changes lasting more than two weeks",ENT
+"vertigo, ear pressure, hearing loss on one side",ENT
+"snoring, sleep disruption, enlarged adenoids",ENT
+"ear infection, fluid drainage, pain and fever",ENT
+"lump in throat, difficulty swallowing, neck mass",ENT
+"allergic rhinitis, runny nose, sneezing, itchy eyes",ENT
+"loss of smell and taste, nasal polyps",ENT
+"tinnitus, constant ringing in ears, worse at night",ENT
+"feeling depressed, loss of interest in activities, fatigue",Psychiatry
+"anxiety attacks, panic episodes, racing thoughts",Psychiatry
+"insomnia, difficulty falling asleep, early morning awakening",Psychiatry
+"mood swings, irritability, emotional instability",Psychiatry
+"obsessive thoughts, compulsive behaviors, anxiety",Psychiatry
+"social withdrawal, feelings of hopelessness, suicidal thoughts",Psychiatry
+"difficulty coping with stress, overwhelming worry",Psychiatry
+"post-traumatic stress, flashbacks, nightmares, hypervigilance",Psychiatry
+"eating disorder symptoms, body image issues, binge eating",Psychiatry
+"substance abuse, dependence, withdrawal symptoms",Psychiatry
+"hallucinations, paranoid thoughts, disorganized thinking",Psychiatry
+"chronic fatigue, lack of motivation, persistent sadness",Psychiatry
+"cold and flu symptoms, mild fever, body aches, fatigue",General Practice
+"annual checkup, routine blood work, general wellness",General Practice
+"mild headache, runny nose, sneezing",General Practice
+"sore throat, mild cough, low-grade fever",General Practice
+"urinary tract infection, burning during urination, frequency",General Practice
+"mild allergies, seasonal sneezing, itchy throat",General Practice
+"general fatigue, feeling run down, need checkup",General Practice
+"minor wound, needs cleaning and bandaging",General Practice
+"vaccination, flu shot, travel immunizations needed",General Practice
+"back pain, mild, not radiating, muscle strain",General Practice
+"mild stomach upset, occasional nausea, no blood in stool",General Practice
+"eye strain, dry eyes, minor vision changes",General Practice
+"bruise, minor swelling, no fracture suspected",General Practice
+"insect bite, mild swelling and itching",General Practice
+"persistent dry cough, no other symptoms, mild discomfort",General Practice
+"blurred vision, difficulty reading, need glasses",Ophthalmology
+"eye pain, redness, sensitivity to light",Ophthalmology
+"sudden vision loss in one eye, floaters, flashes of light",Ophthalmology
+"double vision, eye misalignment, headaches",Ophthalmology
+"glaucoma screening, family history, increased eye pressure",Ophthalmology
+"cataracts, cloudy vision, difficulty driving at night",Ophthalmology
+"pink eye, conjunctivitis, eye discharge, itching",Ophthalmology
+"diabetic retinopathy screening, blurred vision, diabetes history",Ophthalmology
+"foreign body in eye, scratchy sensation, tearing",Ophthalmology
+"frequent urination at night, weak urine stream, difficulty starting",Urology
+"kidney stones, severe flank pain, blood in urine",Urology
+"pain in lower abdomen, difficulty urinating, burning sensation",Urology
+"recurring urinary tract infections, pelvic pain",Urology
+"blood in urine, no pain, needs evaluation",Urology
+"testicular pain, swelling, lump detected",Urology
+"erectile dysfunction, low libido, hormonal concerns",Urology
+"prostate issues, elevated PSA, urinary hesitancy",Urology
+"incontinence, leaking urine, urgency",Urology
+"fever in child, rash, irritability, not eating well",Pediatrics
+"childhood ear infection, pulling at ear, crying, fever",Pediatrics
+"baby not gaining weight, feeding difficulties, spitting up",Pediatrics
+"developmental delay concerns, not hitting milestones",Pediatrics
+"childhood asthma, wheezing, recurrent cough in child",Pediatrics
+"diaper rash, skin irritation in infant",Pediatrics
+"toddler with high fever, lethargy, poor appetite",Pediatrics
+"child vaccination schedule, wellness checkup for child",Pediatrics
+"adolescent growth concerns, delayed puberty signs",Pediatrics
+"hyperactivity in child, difficulty focusing in school, ADHD concerns",Pediatrics
+"swollen lymph nodes in child, recurrent infections",Pediatrics
+"child with stomach pain, vomiting, diarrhea for two days",Pediatrics
+"irregular periods, heavy bleeding, severe cramps",Gynecology
+"pelvic pain, bloating, pain during intercourse",Gynecology
+"breast lump, tenderness, needs mammogram",Gynecology
+"abnormal pap smear results, needs follow-up",Gynecology
+"menopause symptoms, hot flashes, mood changes, insomnia",Gynecology
+"painful periods, endometriosis symptoms, chronic pelvic pain",Gynecology
+"pregnancy confirmation, prenatal care needed",Gynecology
+"vaginal discharge, unusual odor, itching",Gynecology
+"fertility concerns, difficulty getting pregnant, ovulation issues",Gynecology
+"PCOS symptoms, irregular cycles, weight gain, acne",Gynecology
+"contraception consultation, birth control options",Gynecology
+"postpartum depression, mood changes after delivery",Gynecology
+"joint pain, swelling, redness, warmth in joints",Rheumatology
+"lupus symptoms, butterfly rash, joint pain, fatigue",Rheumatology
+"fibromyalgia, widespread pain, tender points, fatigue",Rheumatology
+"gout attack, sudden severe pain in big toe, swelling",Rheumatology
+"rheumatoid arthritis, symmetric joint swelling, morning stiffness",Rheumatology
+"scleroderma, skin hardening, Raynaud phenomenon, difficulty swallowing",Rheumatology
+"vasculitis symptoms, unexplained rash, fever, weight loss",Rheumatology
+"ankylosing spondylitis, lower back stiffness, worse in morning",Rheumatology
+"Sjogren syndrome, dry eyes, dry mouth, joint pain",Rheumatology
+"excessive thirst, frequent urination, unexplained weight loss",Endocrinology
+"thyroid swelling, weight gain, cold intolerance, fatigue",Endocrinology
+"hyperthyroidism, weight loss, tremor, heat intolerance, anxiety",Endocrinology
+"diabetes management, blood sugar fluctuations, insulin adjustment",Endocrinology
+"adrenal fatigue, low energy, salt craving, low blood pressure",Endocrinology
+"PCOS with metabolic syndrome, insulin resistance",Endocrinology
+"osteoporosis screening, bone density concerns, calcium deficiency",Endocrinology
+"growth hormone deficiency, short stature, delayed growth in child",Endocrinology
+"Cushing syndrome, weight gain, moon face, purple stretch marks",Endocrinology

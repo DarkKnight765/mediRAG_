@@ -1,0 +1,40 @@
+Symptom Triage Classifier — Classification Report
+==================================================
+Model: TF-IDF + Logistic Regression
+Dataset: 171 samples, 15 specialties
+Evaluation: 5-fold stratified cross-validation
+
+Overall Metrics:
+  Accuracy:           0.4503
+  Weighted F1:        0.4457
+  Weighted Precision:  0.4561
+  Weighted Recall:     0.4503
+
+Per-Class Report:
+                  precision    recall  f1-score   support
+
+      Cardiology       0.38      0.42      0.40        12
+     Dermatology       0.69      0.75      0.72        12
+             ENT       0.45      0.42      0.43        12
+   Endocrinology       0.40      0.44      0.42         9
+Gastroenterology       0.17      0.17      0.17        12
+General Practice       0.70      0.47      0.56        15
+      Gynecology       0.43      0.25      0.32        12
+       Neurology       0.25      0.25      0.25        12
+   Ophthalmology       0.82      1.00      0.90         9
+     Orthopedics       0.35      0.58      0.44        12
+      Pediatrics       0.40      0.33      0.36        12
+      Psychiatry       0.47      0.58      0.52        12
+     Pulmonology       0.55      0.50      0.52        12
+    Rheumatology       0.43      0.33      0.38         9
+         Urology       0.33      0.33      0.33         9
+
+        accuracy                           0.45       171
+       macro avg       0.45      0.46      0.45       171
+    weighted avg       0.46      0.45      0.45       171
+
+
+Model Comparison:
+  TF-IDF + Logistic Regression: Acc=0.4503, F1=0.4457 <-- BEST
+  TF-IDF + Linear SVM: Acc=0.4444, F1=0.4384
+  TF-IDF + Multinomial NB: Acc=0.4327, F1=0.4368

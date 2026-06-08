@@ -1,0 +1,16 @@
+,Cardiology,Dermatology,ENT,Endocrinology,Gastroenterology,General Practice,Gynecology,Neurology,Ophthalmology,Orthopedics,Pediatrics,Psychiatry,Pulmonology,Rheumatology,Urology
+Cardiology,5,0,0,0,0,0,0,2,0,1,0,0,4,0,0
+Dermatology,1,9,0,0,0,0,0,1,0,0,0,1,0,0,0
+ENT,0,0,5,0,3,1,0,0,0,1,1,1,0,0,0
+Endocrinology,1,0,0,4,1,0,0,0,0,0,2,0,0,1,0
+Gastroenterology,0,1,1,1,2,1,2,1,0,0,1,0,0,1,1
+General Practice,0,0,3,0,0,7,0,0,1,1,1,1,0,0,1
+Gynecology,0,1,0,1,1,0,3,1,0,0,0,2,0,0,3
+Neurology,1,0,1,0,0,1,0,3,1,3,0,1,0,0,1
+Ophthalmology,0,0,0,0,0,0,0,0,9,0,0,0,0,0,0
+Orthopedics,0,0,0,0,0,0,0,3,0,7,0,0,0,2,0
+Pediatrics,1,1,1,2,2,0,0,0,0,0,4,0,1,0,0
+Psychiatry,0,0,0,0,2,0,0,1,0,1,1,7,0,0,0
+Pulmonology,4,0,0,0,0,0,0,0,0,0,0,2,6,0,0
+Rheumatology,0,1,0,0,1,0,0,0,0,4,0,0,0,3,0
+Urology,0,0,0,2,0,0,2,0,0,2,0,0,0,0,3
