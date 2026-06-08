@@ -41,6 +41,7 @@ The project is fully containerized and hosted in production:
 - **Backend**: Node.js, Express, Prisma ORM
 - **Database**: PostgreSQL (hosted on Supabase)
 - **Auth**: Google OAuth 2.0, Secure JWT Sessions
+- **Machine Learning**: Python, scikit-learn, pandas, numpy
 - **AI Models**: Google Gemini, Groq, local fallbacks
 - **Hosting**: Render
 
@@ -73,6 +74,10 @@ flowchart LR
   U[Patient / User] --> F[React Frontend]
   F --> B[Express Node.js Backend]
   
+  B --> ML[Local ML Models]
+  ML --> CLF[Symptom Triage\nTF-IDF + LogReg]
+  ML --> REC[Health Plan\nRandom Forest]
+  
   B --> M{Runtime Model Switch}
   M --> G[Gemini API]
   M --> Q[Groq Llama API]
@@ -81,6 +86,30 @@ flowchart LR
   B --> Auth[Google OAuth Provider]
   B --> DB[(Supabase PostgreSQL)]
 ```
+
+## 🧠 Machine Learning Pipelines
+
+MediRAG includes custom-trained local machine learning models for key triage and recommendation workflows, built using `scikit-learn`, `pandas`, and `numpy`.
+
+### 1. Symptom Triage Classifier (NLP)
+A text classification pipeline that predicts the most appropriate medical specialty based on free-text patient symptom descriptions.
+- **Algorithm**: TF-IDF Vectorization + Logistic Regression (multinomial)
+- **Classes**: 15 Medical Specialties (Cardiology, Neurology, Pediatrics, etc.)
+- **Performance**: 
+  - Accuracy: 45%
+  - Weighted F1: 0.45
+- **Features**: Returns confidence scores, alternative specialties, and urgency levels.
+
+### 2. Health Plan Recommender
+A classifier that recommends structured health and diet plans based on patient demographics and lifestyle factors.
+- **Algorithm**: Logistic Regression
+- **Features**: Age, Weight, Height, Activity Level, Dietary Restrictions, Sleep Issues.
+- **Performance**: 
+  - Accuracy: 93.9%
+  - Weighted F1: 0.94
+- **Evaluation**: Validated using 5-fold stratified cross-validation.
+
+See `backend/ml/evaluation_report.md` for full classification reports and confusion matrices.
 
 ## ⚙️ Local Development
 
