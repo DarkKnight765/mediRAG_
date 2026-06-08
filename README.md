@@ -113,8 +113,10 @@ A classifier that recommends structured health and diet plans based on patient d
 A Convolutional Neural Network (CNN) is actively being developed to replace the LLM-based X-Ray analysis with a dedicated computer vision model.
 - **Framework**: PyTorch (`torchvision`)
 - **Architecture**: ResNet18 (Transfer Learning)
+- **Dataset**: MedMNIST (PneumoniaMNIST)
 - **Training Environment**: Google Colab (Cloud GPU)
-- **Status**: Data augmentation and base model architecture configured in `backend/ml/xray_vision/train_xray_model_colab.ipynb`.
+- **Performance**: Achieved **96.37% Validation Accuracy** on binary classification (Normal vs Pneumonia).
+- **Status**: Training loop completed and weights exported in `backend/ml/xray_vision/train_xray_model_colab.ipynb`.
 
 See `backend/ml/evaluation_report.md` for full classification reports and confusion matrices for the completed models.
 
