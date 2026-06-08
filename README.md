@@ -14,7 +14,9 @@
 
 ---
 
-![Home screen](./Images/Home-new.png)
+![MediRAG — Hero](./Images/Home-new.png)
+
+![MediRAG — Features](./Images/Home-features.png)
 
 </div>
 
