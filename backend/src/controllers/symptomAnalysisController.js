@@ -1,8 +1,9 @@
 const aiService = require("../services/aiService");
+const { triageSymptoms } = require("../services/symptomTriageRecommender");
 
 /**
  * POST /api/symptoms/analyze
- * Uses the existing AI service to analyze symptoms and recommend a specialty.
+ * Uses the trained NLP model first, falls back to the LLM-based AI service.
  */
 exports.analyzeSymptoms = async (req, res) => {
   try {
@@ -12,6 +13,20 @@ exports.analyzeSymptoms = async (req, res) => {
       return res.status(400).json({ success: false, message: "Symptoms are required" });
     }
 
+    // ── Try local ML model first ───────────────────────────
+    const mlResult = triageSymptoms(symptoms);
+
+    if (mlResult && !mlResult.error) {
+      console.log("Symptom triage: ML model prediction used");
+      return res.json({
+        ...mlResult,
+        engine: "ML Triage Classifier",
+      });
+    }
+
+    console.log("Symptom triage: ML model unavailable, falling back to LLM");
+
+    // ── Fall back to LLM-based analysis ────────────────────
     const prompt = `You are a medical triage assistant. A patient describes the following symptoms:
 
 "${symptoms}"
@@ -50,7 +65,7 @@ Important:
       };
     }
 
-    res.json(result);
+    res.json({ ...result, engine: "LLM" });
   } catch (error) {
     console.error("Symptom analysis error:", error);
     res.status(500).json({ success: false, message: "Failed to analyze symptoms" });
