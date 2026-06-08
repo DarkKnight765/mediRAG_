@@ -18,6 +18,7 @@ const services = [
     description:
       "Upload scans or documents for fast AI-assisted review with clear, structured output.",
     link: "/xray-diagnosis",
+    color: "#7C5CFF",
   },
   {
     icon: Target,
@@ -25,6 +26,7 @@ const services = [
     description:
       "Generate nutrition and sleep guidance based on your profile and lifestyle needs.",
     link: "/health-plans",
+    color: "#14B8A6",
   },
   {
     icon: CalendarDays,
@@ -32,6 +34,7 @@ const services = [
     description:
       "Book care with a guided flow that feels clean, fast, and easy to complete.",
     link: "/appointments",
+    color: "#F59E0B",
   },
   {
     icon: Brain,
@@ -39,88 +42,218 @@ const services = [
     description:
       "Access a calm AI chat experience for check-ins, support, and next steps.",
     link: "/mental-health",
+    color: "#EC4899",
   },
 ];
 
 const ServicesPage: React.FC = () => {
   return (
-    <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-      <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-slate-300">
-            <Sparkles className="h-4 w-4 text-amber-300" /> Core services
-          </div>
-          <h1 className="mt-6 text-5xl font-semibold tracking-tight text-white sm:text-6xl">
-            Core healthcare services in one connected platform.
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
-            Every service is presented like part of one connected journey — less
-            clutter, more clarity, better follow-through.
-          </p>
+    <div style={{ maxWidth: 1280, margin: "0 auto", padding: "4rem 2rem 6rem" }}>
+      {/* Header */}
+      <section style={{ marginBottom: "4rem" }}>
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "6px 18px",
+            borderRadius: 9999,
+            border: "1px solid rgba(124,92,255,0.35)",
+            background: "rgba(124,92,255,0.1)",
+            fontSize: 12,
+            fontWeight: 600,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase" as const,
+            color: "#A78BFA",
+            marginBottom: 24,
+          }}
+        >
+          <Sparkles style={{ width: 14, height: 14 }} />
+          Core services
         </div>
-
-        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-          <div className="flex items-center gap-3 text-amber-300">
-            <ShieldCheck className="h-5 w-5" />
-            <span className="text-sm font-semibold uppercase tracking-[0.3em]">
-              Built for patient trust
-            </span>
-          </div>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <MiniMetric value="4" label="Primary paths" />
-            <MiniMetric value="24/7" label="Support access" />
-            <MiniMetric value="1" label="Connected system" />
-            <MiniMetric value="Clear" label="Clinical next steps" />
-          </div>
-        </div>
+        <h1
+          style={{
+            fontSize: "clamp(2rem, 4.5vw, 3.2rem)",
+            fontWeight: 800,
+            letterSpacing: "-0.03em",
+            color: "#fff",
+            margin: "0 0 18px",
+            maxWidth: 700,
+          }}
+        >
+          Core healthcare services in one connected platform.
+        </h1>
+        <p
+          style={{
+            fontSize: 16,
+            lineHeight: 1.75,
+            color: "#A1A1AA",
+            maxWidth: 540,
+            margin: 0,
+          }}
+        >
+          Every service is presented as part of one connected journey — less clutter, more clarity, better follow-through.
+        </p>
       </section>
 
-      <section className="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+      {/* Services Grid */}
+      <section
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: 20,
+          marginBottom: "4rem",
+        }}
+      >
         {services.map((service) => {
           const Icon = service.icon;
           return (
             <Link
               key={service.title}
               to={service.link}
-              className="group rounded-[1.75rem] border border-white/10 bg-[#0d1723] p-6 transition hover:-translate-y-1 hover:border-amber-300/30 hover:bg-[#111d2a]"
+              style={{
+                borderRadius: 24,
+                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(22,22,28,0.9)",
+                padding: "1.75rem",
+                textDecoration: "none",
+                display: "block",
+                transition: "transform 0.25s, border-color 0.25s, box-shadow 0.25s",
+                backdropFilter: "blur(12px)",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget;
+                el.style.transform = "translateY(-5px)";
+                el.style.borderColor = `${service.color}40`;
+                el.style.boxShadow = `0 20px 50px rgba(0,0,0,0.3), 0 0 0 1px ${service.color}20`;
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget;
+                el.style.transform = "translateY(0)";
+                el.style.borderColor = "rgba(255,255,255,0.08)";
+                el.style.boxShadow = "none";
+              }}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 text-amber-300">
-                <Icon className="h-6 w-6" />
+              <div
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: 16,
+                  background: `${service.color}18`,
+                  border: `1px solid ${service.color}30`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 20,
+                }}
+              >
+                <Icon style={{ width: 24, height: 24, color: service.color }} />
               </div>
-              <h2 className="mt-5 text-xl font-semibold text-white">
+              <h2 style={{ fontSize: 18, fontWeight: 700, color: "#fff", margin: "0 0 10px" }}>
                 {service.title}
               </h2>
-              <p className="mt-3 text-sm leading-7 text-slate-400">
+              <p style={{ fontSize: 14, lineHeight: 1.75, color: "#A1A1AA", margin: "0 0 22px" }}>
                 {service.description}
               </p>
-              <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-amber-300">
-                Open{" "}
-                <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: service.color,
+                }}
+              >
+                Open <ArrowUpRight style={{ width: 14, height: 14 }} />
               </div>
             </Link>
           );
         })}
       </section>
 
-      <section className="mt-16 grid gap-6 lg:grid-cols-[1fr_1fr]">
-        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-          <p className="text-sm uppercase tracking-[0.35em] text-slate-400">
+      {/* Bottom info cards */}
+      <section
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: 20,
+        }}
+      >
+        {/* Why it works */}
+        <div
+          style={{
+            borderRadius: 24,
+            border: "1px solid rgba(255,255,255,0.08)",
+            background: "rgba(22,22,28,0.7)",
+            padding: "2rem",
+            backdropFilter: "blur(12px)",
+          }}
+        >
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" as const, color: "#52525B", margin: "0 0 14px" }}>
             Why it works
           </p>
-          <h2 className="mt-4 text-3xl font-semibold text-white">
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#fff", margin: "0 0 14px" }}>
             Simple entry points, one polished system.
           </h2>
-          <p className="mt-4 text-sm leading-7 text-slate-300">
-            The UI keeps each service visually aligned so users can move between
-            diagnosis, planning, booking, and support without feeling lost.
+          <p style={{ fontSize: 14, lineHeight: 1.8, color: "#A1A1AA", margin: 0 }}>
+            The UI keeps each service visually aligned so users can move between diagnosis, planning, booking, and support without feeling lost.
           </p>
         </div>
 
-        <div className="rounded-[2rem] border border-white/10 bg-[#0b1320]/90 p-8 backdrop-blur-xl">
-          <p className="text-sm uppercase tracking-[0.35em] text-slate-400">
+        {/* Platform metrics */}
+        <div
+          style={{
+            borderRadius: 24,
+            border: "1px solid rgba(124,92,255,0.2)",
+            background: "rgba(124,92,255,0.06)",
+            padding: "2rem",
+            backdropFilter: "blur(12px)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+            <ShieldCheck style={{ width: 20, height: 20, color: "#7C5CFF" }} />
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "#7C5CFF" }}>
+              Built for patient trust
+            </span>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            {[
+              { value: "4", label: "Primary paths" },
+              { value: "24/7", label: "Support access" },
+              { value: "1", label: "Connected system" },
+              { value: "Clear", label: "Clinical next steps" },
+            ].map((m) => (
+              <div
+                key={m.label}
+                style={{
+                  borderRadius: 14,
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(15,15,18,0.6)",
+                  padding: "14px 16px",
+                }}
+              >
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#fff" }}>{m.value}</div>
+                <div style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#52525B", marginTop: 4 }}>{m.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Flow checklist */}
+        <div
+          style={{
+            borderRadius: 24,
+            border: "1px solid rgba(255,255,255,0.08)",
+            background: "rgba(22,22,28,0.7)",
+            padding: "2rem",
+            backdropFilter: "blur(12px)",
+          }}
+        >
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase" as const, color: "#52525B", margin: "0 0 20px" }}>
             Flow
           </p>
-          <div className="mt-6 space-y-4">
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: 10 }}>
             {[
               "Capture intent quickly",
               "Route users to the right care path",
@@ -129,9 +262,20 @@ const ServicesPage: React.FC = () => {
             ].map((item) => (
               <div
                 key={item}
-                className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  borderRadius: 14,
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(15,15,18,0.5)",
+                  padding: "12px 16px",
+                  fontSize: 14,
+                  color: "#E4E4E7",
+                }}
               >
-                <Stethoscope className="h-4 w-4 text-cyan-300" /> {item}
+                <Stethoscope style={{ width: 15, height: 15, color: "#7C5CFF", flexShrink: 0 }} />
+                {item}
               </div>
             ))}
           </div>
@@ -140,17 +284,5 @@ const ServicesPage: React.FC = () => {
     </div>
   );
 };
-
-const MiniMetric: React.FC<{ value: string; label: string }> = ({
-  value,
-  label,
-}) => (
-  <div className="rounded-3xl border border-white/10 bg-[#0d1723] p-4">
-    <div className="text-2xl font-semibold text-white">{value}</div>
-    <div className="mt-1 text-xs uppercase tracking-[0.25em] text-slate-500">
-      {label}
-    </div>
-  </div>
-);
 
 export default ServicesPage;

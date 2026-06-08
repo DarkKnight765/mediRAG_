@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   User,
   X,
+  Zap,
 } from "lucide-react";
 
 const navItems = [
@@ -31,7 +32,6 @@ const MODEL_MODES = [
   { value: "groq", label: "Groq", desc: "Fast inference" },
 ];
 
-// Pages where the AI model selector should be visible
 const AI_FEATURE_PATHS = ["/xray-diagnosis", "/health-plans", "/mental-health"];
 
 const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -41,13 +41,19 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [modelMode, setModelMode] = useState("auto");
   const [showModelMenu, setShowModelMenu] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  // Fetch current model mode on mount
   useEffect(() => {
     axios
       .get(`${API_BASE_URL}/model/mode`)
       .then((res) => setModelMode(res.data.mode))
       .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const handleModeChange = async (mode: string) => {
@@ -67,155 +73,321 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   const currentMode = MODEL_MODES.find((m) => m.value === modelMode);
-  const showModelSelector = AI_FEATURE_PATHS.some((p) => location.pathname.startsWith(p));
+  const showModelSelector = AI_FEATURE_PATHS.some((p) =>
+    location.pathname.startsWith(p)
+  );
 
   return (
-    <div className="min-h-screen bg-[#071018] text-slate-100">
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute left-[-12rem] top-[-10rem] h-[28rem] w-[28rem] rounded-full bg-cyan-500/10 blur-3xl" />
-        <div className="absolute right-[-8rem] top-[12rem] h-[24rem] w-[24rem] rounded-full bg-emerald-500/10 blur-3xl" />
-        <div className="absolute bottom-[-10rem] left-[30%] h-[24rem] w-[24rem] rounded-full bg-amber-500/10 blur-3xl" />
-      </div>
+    <div
+      style={{ minHeight: "100vh", background: "#0F0F12", color: "#fff", position: "relative", overflowX: "hidden" }}
+    >
+      {/* ── Decorative Orbs ── */}
+      <div
+        className="orb orb-purple"
+        style={{ width: 600, height: 600, left: "-200px", top: "-200px" }}
+      />
+      <div
+        className="orb orb-teal"
+        style={{ width: 500, height: 500, right: "-150px", top: "300px" }}
+      />
+      <div
+        className="orb orb-amber"
+        style={{ width: 400, height: 400, bottom: "-100px", left: "30%" }}
+      />
 
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#071018]/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-amber-300/30 bg-white/5 shadow-lg shadow-black/20">
-              <HeartPulse className="h-5 w-5 text-amber-300" />
+      {/* ─────────── HEADER ─────────── */}
+      <header
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
+          background: scrolled ? "rgba(15,15,18,0.88)" : "transparent",
+          backdropFilter: scrolled ? "blur(20px)" : "none",
+          transition: "background 0.3s, border-color 0.3s, backdrop-filter 0.3s",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1280,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            height: 72,
+            padding: "0 1rem",
+          }}
+          className="sm:px-8"
+        >
+          {/* Logo */}
+          <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
+            <div
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: 12,
+                background: "linear-gradient(135deg, #7C5CFF 0%, #5B3FCC 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 0 20px rgba(124,92,255,0.4)",
+                flexShrink: 0,
+              }}
+            >
+              <HeartPulse style={{ width: 18, height: 18, color: "#fff" }} />
             </div>
-            <div>
-              <p className="text-sm uppercase tracking-[0.35em] text-slate-400">
+            {/* Brand text — hide subtitle on mobile to save space */}
+            <div className="hidden xs:block sm:block">
+              <p style={{ fontSize: 10, letterSpacing: "0.3em", color: "#A1A1AA", textTransform: "uppercase", margin: 0 }}>
                 MediRAG
               </p>
-              <p className="text-lg font-semibold text-white">
+              <p style={{ fontSize: 13, fontWeight: 600, color: "#fff", margin: 0, marginTop: 1, whiteSpace: "nowrap" }}>
                 Care that converts into clarity
               </p>
             </div>
+            {/* Show only wordmark on mobile */}
+            <span className="sm:hidden" style={{ fontSize: 15, fontWeight: 700, color: "#fff", letterSpacing: "-0.01em" }}>
+              MediRAG
+            </span>
           </Link>
 
-          <nav className="hidden items-center gap-2 md:flex">
+          {/* Desktop Nav — hidden on mobile, shown md+ */}
+          <nav className="hidden md:flex" style={{ alignItems: "center", gap: 4 }}>
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
-                className={({ isActive }) =>
-                  `rounded-full px-4 py-2 text-sm transition ${
-                    isActive
-                      ? "bg-white/10 text-white"
-                      : "text-slate-300 hover:bg-white/5 hover:text-white"
-                  }`
-                }
+                end={item.to === "/"}
+                style={({ isActive }) => ({
+                  padding: "7px 18px",
+                  borderRadius: 9999,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: isActive ? "#fff" : "#A1A1AA",
+                  background: isActive ? "rgba(124,92,255,0.15)" : "transparent",
+                  border: isActive ? "1px solid rgba(124,92,255,0.35)" : "1px solid transparent",
+                  transition: "all 0.2s",
+                  textDecoration: "none",
+                })}
               >
                 {item.label}
               </NavLink>
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
-            {/* Model Mode Selector — only on AI feature pages */}
-            {showModelSelector && <div className="relative hidden sm:block">
-              <button
-                type="button"
-                onClick={() => setShowModelMenu(!showModelMenu)}
-                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-300 transition hover:bg-white/10 hover:text-white"
-                aria-label="Model mode selector"
-              >
-                <Settings2 className="h-3.5 w-3.5" />
-                <span className="font-medium">{currentMode?.label || "Auto"}</span>
-              </button>
+          {/* Right section */}
+          <div className="flex" style={{ alignItems: "center", gap: 10 }}>
+            {/* Model selector */}
+            {showModelSelector && (
+              <div style={{ position: "relative" }} className="hidden sm:block">
+                <button
+                  type="button"
+                  onClick={() => setShowModelMenu(!showModelMenu)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "7px 14px",
+                    borderRadius: 9999,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.05)",
+                    color: "#A1A1AA",
+                    fontSize: 12,
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                  aria-label="Model mode selector"
+                >
+                  <Settings2 style={{ width: 14, height: 14 }} />
+                  <span style={{ fontWeight: 500 }}>{currentMode?.label || "Auto"}</span>
+                </button>
 
-              {showModelMenu && (
-                <>
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setShowModelMenu(false)}
-                  />
-                  <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-xl border border-white/10 bg-[#0b1320] p-1.5 shadow-2xl shadow-black/40">
-                    <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-                      AI Model
-                    </p>
-                    {MODEL_MODES.map((mode) => (
-                      <button
-                        key={mode.value}
-                        onClick={() => handleModeChange(mode.value)}
-                        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition ${
-                          modelMode === mode.value
-                            ? "bg-cyan-500/10 text-cyan-300"
-                            : "text-slate-300 hover:bg-white/5 hover:text-white"
-                        }`}
+                {showModelMenu && (
+                  <>
+                    <div
+                      style={{ position: "fixed", inset: 0, zIndex: 40 }}
+                      onClick={() => setShowModelMenu(false)}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        right: 0,
+                        top: "calc(100% + 8px)",
+                        zIndex: 50,
+                        width: 200,
+                        borderRadius: 16,
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        background: "#16161C",
+                        padding: "6px",
+                        boxShadow: "0 24px 60px rgba(0,0,0,0.5)",
+                      }}
+                    >
+                      <p
+                        style={{
+                          padding: "8px 12px 4px",
+                          fontSize: 10,
+                          fontWeight: 700,
+                          letterSpacing: "0.15em",
+                          color: "#52525B",
+                          textTransform: "uppercase",
+                          margin: 0,
+                        }}
                       >
-                        <div
-                          className={`h-2 w-2 rounded-full ${
-                            modelMode === mode.value
-                              ? "bg-cyan-400"
-                              : "bg-slate-600"
-                          }`}
-                        />
-                        <div>
-                          <p className="font-medium">{mode.label}</p>
-                          <p className="text-[10px] text-slate-500">
-                            {mode.desc}
-                          </p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>}
+                        AI Model
+                      </p>
+                      {MODEL_MODES.map((mode) => (
+                        <button
+                          key={mode.value}
+                          onClick={() => handleModeChange(mode.value)}
+                          style={{
+                            width: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 10,
+                            padding: "8px 12px",
+                            borderRadius: 10,
+                            background: modelMode === mode.value ? "rgba(124,92,255,0.15)" : "transparent",
+                            color: modelMode === mode.value ? "#7C5CFF" : "#A1A1AA",
+                            fontSize: 13,
+                            fontWeight: 500,
+                            border: "none",
+                            cursor: "pointer",
+                            textAlign: "left",
+                            transition: "all 0.15s",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: 7,
+                              height: 7,
+                              borderRadius: "50%",
+                              background: modelMode === mode.value ? "#7C5CFF" : "#3F3F46",
+                              flexShrink: 0,
+                            }}
+                          />
+                          <div>
+                            <p style={{ margin: 0, fontSize: 13 }}>{mode.label}</p>
+                            <p style={{ margin: 0, fontSize: 10, color: "#52525B" }}>{mode.desc}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
 
             {/* Auth Buttons */}
             {user ? (
-              <div className="hidden items-center gap-3 sm:flex">
+              <div className="hidden sm:flex" style={{ alignItems: "center", gap: 8 }}>
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-300 transition hover:bg-white/10 hover:text-white"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 7,
+                    padding: "7px 14px",
+                    borderRadius: 9999,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.05)",
+                    color: "#E4E4E7",
+                    fontSize: 13,
+                    textDecoration: "none",
+                    transition: "all 0.2s",
+                  }}
                 >
                   {user.avatar ? (
-                    <img src={user.avatar} alt="Avatar" className="h-4 w-4 rounded-full" />
+                    <img src={user.avatar} alt="Avatar" style={{ width: 18, height: 18, borderRadius: "50%" }} />
                   ) : (
-                    <User className="h-3.5 w-3.5" />
+                    <User style={{ width: 14, height: 14 }} />
                   )}
-                  <span className="max-w-[100px] truncate">
+                  <span style={{ maxWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {user.name || user.email}
                   </span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-400 transition hover:bg-red-500/10 hover:text-red-300 hover:border-red-500/30"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "7px 12px",
+                    borderRadius: 9999,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "rgba(255,255,255,0.05)",
+                    color: "#A1A1AA",
+                    fontSize: 13,
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
                   aria-label="Sign out"
                 >
-                  <LogOut className="h-3.5 w-3.5" />
+                  <LogOut style={{ width: 14, height: 14 }} />
                 </button>
               </div>
             ) : (
-              <div className="hidden items-center gap-2 sm:flex">
+              <div className="hidden sm:flex" style={{ alignItems: "center", gap: 8 }}>
                 <Link
                   to="/login"
-                  className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white"
+                  style={{
+                    padding: "7px 18px",
+                    borderRadius: 9999,
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    background: "transparent",
+                    color: "#E4E4E7",
+                    fontSize: 14,
+                    fontWeight: 500,
+                    textDecoration: "none",
+                    transition: "all 0.2s",
+                  }}
                 >
                   Sign in
                 </Link>
                 <Link
                   to="/signup"
-                  className="inline-flex items-center gap-2 rounded-full border border-amber-300/30 bg-amber-300 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-amber-200"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "7px 18px",
+                    borderRadius: 9999,
+                    background: "#7C5CFF",
+                    color: "#fff",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    transition: "all 0.2s",
+                    boxShadow: "0 4px 16px rgba(124,92,255,0.35)",
+                  }}
                 >
-                  Get started <ArrowUpRight className="h-4 w-4" />
+                  Get started <ArrowUpRight style={{ width: 15, height: 15 }} />
                 </Link>
               </div>
             )}
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button — hidden on md+ */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-200 md:hidden"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10,
+                border: "1px solid rgba(255,255,255,0.12)",
+                background: "rgba(255,255,255,0.05)",
+                color: "#E4E4E7",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                flexShrink: 0,
+              }}
               aria-label="Open navigation"
+              className="flex md:hidden"
             >
               {mobileMenuOpen ? (
-                <X className="h-5 w-5" />
+                <X style={{ width: 18, height: 18 }} />
               ) : (
-                <Menu className="h-5 w-5" />
+                <Menu style={{ width: 18, height: 18 }} />
               )}
             </button>
           </div>
@@ -223,83 +395,102 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="border-t border-white/10 bg-[#071018]/95 backdrop-blur-xl md:hidden">
-            <div className="space-y-1 px-6 py-4">
+          <div
+            style={{
+              borderTop: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(15,15,18,0.97)",
+              backdropFilter: "blur(20px)",
+            }}
+            className="md:hidden"
+          >
+            <div style={{ padding: "1rem 1.5rem 1.5rem" }}>
               {navItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
+                  end={item.to === "/"}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={({ isActive }) =>
-                    `block rounded-xl px-4 py-3 text-sm transition ${
-                      isActive
-                        ? "bg-white/10 text-white"
-                        : "text-slate-300 hover:bg-white/5"
-                    }`
-                  }
+                  style={({ isActive }) => ({
+                    display: "block",
+                    padding: "11px 16px",
+                    borderRadius: 12,
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: isActive ? "#fff" : "#A1A1AA",
+                    background: isActive ? "rgba(124,92,255,0.15)" : "transparent",
+                    textDecoration: "none",
+                    marginBottom: 4,
+                    transition: "all 0.2s",
+                  })}
                 >
                   {item.label}
                 </NavLink>
               ))}
 
-              <div className="my-3 border-t border-white/5" />
+              <div style={{ margin: "12px 0", height: 1, background: "rgba(255,255,255,0.06)" }} />
 
-              {/* Mobile model mode selector — only on AI feature pages */}
-              {showModelSelector && <div className="px-4 py-2">
-                <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-                  AI Model
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {MODEL_MODES.map((mode) => (
-                    <button
-                      key={mode.value}
-                      onClick={() => handleModeChange(mode.value)}
-                      className={`rounded-lg px-3 py-1.5 text-xs transition ${
-                        modelMode === mode.value
-                          ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
-                          : "bg-white/5 text-slate-400 border border-white/10 hover:text-white"
-                      }`}
-                    >
-                      {mode.label}
-                    </button>
-                  ))}
+              {showModelSelector && (
+                <div style={{ padding: "8px 0" }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: "#52525B", textTransform: "uppercase", margin: "0 0 10px" }}>
+                    AI Model
+                  </p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                    {MODEL_MODES.map((mode) => (
+                      <button
+                        key={mode.value}
+                        onClick={() => handleModeChange(mode.value)}
+                        style={{
+                          padding: "6px 14px",
+                          borderRadius: 8,
+                          fontSize: 12,
+                          fontWeight: 500,
+                          background: modelMode === mode.value ? "rgba(124,92,255,0.2)" : "rgba(255,255,255,0.05)",
+                          color: modelMode === mode.value ? "#7C5CFF" : "#A1A1AA",
+                          border: modelMode === mode.value ? "1px solid rgba(124,92,255,0.4)" : "1px solid rgba(255,255,255,0.1)",
+                          cursor: "pointer",
+                          transition: "all 0.15s",
+                        }}
+                      >
+                        {mode.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>}
+              )}
 
-              <div className="my-3 border-t border-white/5" />
+              <div style={{ margin: "12px 0", height: 1, background: "rgba(255,255,255,0.06)" }} />
 
-              {/* Mobile auth */}
               {user ? (
-                <div className="space-y-2 px-4 py-2">
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   <Link
                     to="/profile"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2 text-sm text-slate-300 hover:text-white transition"
+                    style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "#E4E4E7", padding: "10px 0", textDecoration: "none" }}
                   >
-                    <User className="h-4 w-4" />
-                    <span>{user.name || user.email}</span>
+                    <User style={{ width: 16, height: 16 }} />
+                    {user.name || user.email}
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-2 text-sm text-red-400 transition hover:text-red-300"
+                    style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "#F87171", background: "none", border: "none", cursor: "pointer", padding: "10px 0" }}
                   >
-                    <LogOut className="h-4 w-4" />
+                    <LogOut style={{ width: 16, height: 16 }} />
                     Sign out
                   </button>
                 </div>
               ) : (
-                <div className="flex gap-2 px-4 py-2">
+                <div style={{ display: "flex", gap: 10 }}>
                   <Link
                     to="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center text-sm text-slate-300 transition hover:bg-white/10"
+                    style={{ flex: 1, padding: "12px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)", color: "#E4E4E7", fontSize: 14, fontWeight: 500, textAlign: "center", textDecoration: "none" }}
                   >
                     Sign in
                   </Link>
                   <Link
                     to="/signup"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex-1 rounded-xl border border-amber-300/30 bg-amber-300 px-4 py-2.5 text-center text-sm font-semibold text-slate-950 transition hover:bg-amber-200"
+                    style={{ flex: 1, padding: "12px", borderRadius: 12, background: "#7C5CFF", color: "#fff", fontSize: 14, fontWeight: 600, textAlign: "center", textDecoration: "none" }}
                   >
                     Sign up
                   </Link>
@@ -310,91 +501,160 @@ const SiteLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         )}
       </header>
 
-      <main className="relative z-10">{children}</main>
+      {/* ─────────── MAIN ─────────── */}
+      <main style={{ position: "relative", zIndex: 10 }}>{children}</main>
 
-      <footer className="relative z-10 border-t border-white/10 bg-[#071018]/95">
-        <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8 lg:py-16">
-          <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 shadow-2xl shadow-black/20 backdrop-blur-xl lg:p-10">
-            <div className="grid gap-10 lg:grid-cols-[1.4fr_0.9fr_1fr] lg:items-start">
+      {/* ─────────── FOOTER ─────────── */}
+      <footer
+        style={{
+          position: "relative",
+          zIndex: 10,
+          borderTop: "1px solid rgba(255,255,255,0.08)",
+          background: "rgba(15,15,18,0.95)",
+          marginTop: 80,
+        }}
+      >
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "4rem 2rem 3rem" }}>
+          <div
+            style={{
+              borderRadius: 28,
+              border: "1px solid rgba(255,255,255,0.08)",
+              background: "linear-gradient(135deg, rgba(124,92,255,0.07) 0%, rgba(255,255,255,0.03) 100%)",
+              padding: "2.5rem",
+              backdropFilter: "blur(20px)",
+            }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gap: "2.5rem",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              }}
+            >
+              {/* Brand */}
               <div>
-                <p className="text-xs uppercase tracking-[0.45em] text-slate-500">
-                  MediRAG
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+                  <div
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: 12,
+                      background: "linear-gradient(135deg, #7C5CFF, #5B3FCC)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 0 16px rgba(124,92,255,0.35)",
+                    }}
+                  >
+                    <HeartPulse style={{ width: 18, height: 18, color: "#fff" }} />
+                  </div>
+                  <span style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>MediRAG</span>
+                </div>
+                <p style={{ fontSize: 13, lineHeight: 1.8, color: "#A1A1AA", maxWidth: 280, margin: "0 0 20px" }}>
+                  Practical digital healthcare for patients and care teams. Access imaging, plans, appointments, and support in one platform.
                 </p>
-                <h3 className="mt-4 max-w-2xl text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                  Practical digital healthcare for patients and care teams.
-                </h3>
-                <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300">
-                  Access imaging support, care plans, appointment booking, and
-                  behavioral check-ins in one connected platform.
-                </p>
-
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-slate-200">
-                    Fast access to care tools
-                  </div>
-                  <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-slate-200">
-                    AI-assisted support
-                  </div>
-                  <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-slate-200">
-                    Clean, focused UI
-                  </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {["Fast access", "AI-assisted", "Clean UI"].map((tag) => (
+                    <span
+                      key={tag}
+                      style={{
+                        padding: "4px 12px",
+                        borderRadius: 9999,
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        background: "rgba(255,255,255,0.04)",
+                        fontSize: 11,
+                        color: "#A1A1AA",
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
 
+              {/* Explore */}
               <div>
-                <h4 className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-500">
+                <h4
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: "0.2em",
+                    color: "#52525B",
+                    textTransform: "uppercase",
+                    margin: "0 0 20px",
+                  }}
+                >
                   Explore
                 </h4>
-                <div className="mt-5 grid gap-3 text-sm text-slate-300">
-                  <Link className="transition hover:text-white" to="/services">
-                    Services
-                  </Link>
-                  <Link
-                    className="transition hover:text-white"
-                    to="/health-plans"
-                  >
-                    Health Plans
-                  </Link>
-                  <Link
-                    className="transition hover:text-white"
-                    to="/mental-health"
-                  >
-                    Mental Health
-                  </Link>
-                  <Link className="transition hover:text-white" to="/contact">
-                    Contact
-                  </Link>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {[
+                    { to: "/services", label: "Services" },
+                    { to: "/health-plans", label: "Health Plans" },
+                    { to: "/mental-health", label: "Mental Health" },
+                    { to: "/contact", label: "Contact" },
+                  ].map((link) => (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      style={{ fontSize: 14, color: "#A1A1AA", textDecoration: "none", transition: "color 0.2s" }}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
                 </div>
               </div>
 
-              <div className="rounded-[1.75rem] border border-white/10 bg-[#0b1320] p-6">
-                <div className="flex items-center gap-3 text-amber-300">
-                  <ShieldCheck className="h-5 w-5" />
-                  <span className="text-xs font-semibold uppercase tracking-[0.35em]">
+              {/* Trust card */}
+              <div
+                style={{
+                  borderRadius: 20,
+                  border: "1px solid rgba(124,92,255,0.2)",
+                  background: "rgba(124,92,255,0.07)",
+                  padding: "1.5rem",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                  <ShieldCheck style={{ width: 20, height: 20, color: "#7C5CFF" }} />
+                  <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#7C5CFF" }}>
                     Trusted system
                   </span>
                 </div>
-
-                <p className="mt-4 text-sm leading-7 text-slate-300">
-                  Built for clarity, reliable triage guidance, and clear next
-                  actions for follow-up care.
+                <p style={{ fontSize: 13, lineHeight: 1.8, color: "#A1A1AA", margin: "0 0 20px" }}>
+                  Built for clarity, reliable triage guidance, and clear next actions for follow-up care.
                 </p>
-
-                <div className="mt-6 space-y-3">
-                  <div className="flex items-center gap-3 text-sm text-slate-200">
-                    <CalendarDays className="h-4 w-4 text-cyan-300" />
-                    24/7 guided support
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-slate-200">
-                    <Brain className="h-4 w-4 text-emerald-300" />
-                    AI-assisted care journeys
-                  </div>
-                  <div className="flex items-center gap-3 text-sm text-slate-200">
-                    <ShieldCheck className="h-4 w-4 text-amber-300" />
-                    Secure, reassuring interface
-                  </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {[
+                    { icon: CalendarDays, label: "24/7 guided support", color: "#7C5CFF" },
+                    { icon: Brain, label: "AI-assisted care journeys", color: "#14B8A6" },
+                    { icon: Zap, label: "Secure, reassuring interface", color: "#F59E0B" },
+                  ].map(({ icon: Icon, label, color }) => (
+                    <div key={label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#E4E4E7" }}>
+                      <Icon style={{ width: 15, height: 15, color, flexShrink: 0 }} />
+                      {label}
+                    </div>
+                  ))}
                 </div>
               </div>
+            </div>
+
+            <div
+              style={{
+                marginTop: "2rem",
+                paddingTop: "1.5rem",
+                borderTop: "1px solid rgba(255,255,255,0.06)",
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 12,
+              }}
+            >
+              <p style={{ margin: 0, fontSize: 12, color: "#52525B" }}>
+                © {new Date().getFullYear()} MediRAG. All rights reserved.
+              </p>
+              <Link to="/privacy" style={{ fontSize: 12, color: "#52525B", textDecoration: "none" }}>
+                Privacy Policy
+              </Link>
             </div>
           </div>
         </div>
