@@ -1,0 +1,37 @@
+Health Plan Recommender — Classification Report
+==================================================
+Model: Logistic Regression
+Dataset: 115 samples, 12 classes
+Evaluation: 5-fold stratified cross-validation
+
+Overall Metrics:
+  Accuracy:           0.9391
+  Weighted F1:        0.9402
+  Weighted Precision:  0.9475
+  Weighted Recall:     0.9391
+
+Per-Class Report:
+                          precision    recall  f1-score   support
+
+                balanced       0.92      0.92      0.92        13
+       balanced_diabetes       1.00      0.93      0.96        14
+      endurance_recovery       1.00      0.83      0.91        12
+         gentle_recovery       1.00      1.00      1.00        10
+      low_sodium_control       1.00      1.00      1.00         6
+low_sodium_sleep_support       1.00      1.00      1.00         7
+           sleep_support       0.73      1.00      0.84         8
+            vegan_energy       1.00      1.00      1.00        14
+       vegetarian_active       1.00      1.00      1.00        11
+      vegetarian_balance       0.75      0.60      0.67         5
+vegetarian_sleep_support       0.60      0.75      0.67         4
+       weight_management       1.00      1.00      1.00        11
+
+                accuracy                           0.94       115
+               macro avg       0.92      0.92      0.91       115
+            weighted avg       0.95      0.94      0.94       115
+
+
+Model Comparison:
+  KNN (k=3, distance): Acc=0.8696, F1=0.8710
+  Random Forest (n=100): Acc=0.9130, F1=0.9114
+  Logistic Regression: Acc=0.9391, F1=0.9402 <-- BEST
