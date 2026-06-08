@@ -109,7 +109,14 @@ A classifier that recommends structured health and diet plans based on patient d
   - Weighted F1: 0.94
 - **Evaluation**: Validated using 5-fold stratified cross-validation.
 
-See `backend/ml/evaluation_report.md` for full classification reports and confusion matrices.
+### 3. Phase 2: Computer Vision (In Progress)
+A Convolutional Neural Network (CNN) is actively being developed to replace the LLM-based X-Ray analysis with a dedicated computer vision model.
+- **Framework**: PyTorch (`torchvision`)
+- **Architecture**: ResNet18 (Transfer Learning)
+- **Training Environment**: Google Colab (Cloud GPU)
+- **Status**: Data augmentation and base model architecture configured in `backend/ml/xray_vision/train_xray_model_colab.ipynb`.
+
+See `backend/ml/evaluation_report.md` for full classification reports and confusion matrices for the completed models.
 
 ## ⚙️ Local Development
 
