@@ -1,0 +1,21 @@
+{
+  "trained_at": "2026-09-04T17:24:13.570742+00:00",
+  "samples": 5232,
+  "train_samples": 4708,
+  "val_samples": 524,
+  "labels": [
+    "Normal",
+    "Pneumonia"
+  ],
+  "best_model": "ResNet18 (Transfer Learning)",
+  "architecture": "ResNet18",
+  "framework": "PyTorch",
+  "epochs": 3,
+  "metrics": {
+    "accuracy": 0.9599,
+    "per_class_accuracy": {
+      "Normal": 0.8815,
+      "Pneumonia": 0.9871
+    }
+  }
+}

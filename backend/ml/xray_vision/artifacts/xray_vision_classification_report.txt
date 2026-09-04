@@ -1,0 +1,12 @@
+X-Ray Vision Classifier — Classification Report
+==================================================
+Model: ResNet18 (Transfer Learning)
+Dataset: PneumoniaMNIST (4708 train, 524 val)
+Epochs: 3
+
+Overall Metrics:
+  Validation Accuracy: 0.9599
+
+Per-Class Accuracy:
+  Normal: 0.8815
+  Pneumonia: 0.9871

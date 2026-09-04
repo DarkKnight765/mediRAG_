@@ -30,6 +30,13 @@ MODELS = [
         "metadata_path": "artifacts/symptom_triage_model.metadata.json",
         "report_path": "artifacts/symptom_triage_classification_report.txt",
     },
+    {
+        "name": "X-Ray Vision Classifier",
+        "dir": ML_DIR / "xray_vision",
+        "train_script": "train.py",
+        "metadata_path": "artifacts/xray_vision_model.metadata.json",
+        "report_path": "artifacts/xray_vision_classification_report.txt",
+    },
 ]
 
 

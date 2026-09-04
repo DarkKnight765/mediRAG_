@@ -41,8 +41,8 @@ The project is fully containerized and hosted in production:
 - **Backend**: Node.js, Express, Prisma ORM
 - **Database**: PostgreSQL (hosted on Supabase)
 - **Auth**: Google OAuth 2.0, Secure JWT Sessions
-- **Machine Learning**: Python, scikit-learn, pandas, numpy
-- **AI Models**: Google Gemini, Groq, local fallbacks
+- **Machine Learning**: Python, scikit-learn, PyTorch, pandas, numpy
+- **AI Models**: Google Gemini, Groq, local ML models with LLM fallbacks
 - **Hosting**: Render
 
 ## 🌟 Key Features
@@ -77,6 +77,7 @@ flowchart LR
   B --> ML[Local ML Models]
   ML --> CLF[Symptom Triage\nTF-IDF + LogReg]
   ML --> REC[Health Plan\nRandom Forest]
+  ML --> CNN[X-Ray Vision\nResNet18 CNN]
   
   B --> M{Runtime Model Switch}
   M --> G[Gemini API]
@@ -89,7 +90,7 @@ flowchart LR
 
 ## 🧠 Machine Learning Pipelines
 
-MediRAG includes custom-trained local machine learning models for key triage and recommendation workflows, built using `scikit-learn`, `pandas`, and `numpy`.
+MediRAG includes three custom-trained local machine learning models for triage, recommendation, and diagnostic workflows, built using `scikit-learn`, `PyTorch`, `pandas`, and `numpy`.
 
 ### 1. Symptom Triage Classifier (NLP)
 A text classification pipeline that predicts the most appropriate medical specialty based on free-text patient symptom descriptions.
@@ -109,16 +110,17 @@ A classifier that recommends structured health and diet plans based on patient d
   - Weighted F1: 0.94
 - **Evaluation**: Validated using 5-fold stratified cross-validation.
 
-### 3. Phase 2: Computer Vision (In Progress)
-A Convolutional Neural Network (CNN) is actively being developed to replace the LLM-based X-Ray analysis with a dedicated computer vision model.
+### 3. X-Ray Vision Classifier (Computer Vision)
+A Convolutional Neural Network (CNN) for chest X-ray diagnostic triage, integrated end-to-end into the image analysis pipeline (CNN-first inference with LLM fallback).
 - **Framework**: PyTorch (`torchvision`)
 - **Architecture**: ResNet18 (Transfer Learning)
-- **Dataset**: MedMNIST (PneumoniaMNIST)
-- **Training Environment**: Google Colab (Cloud GPU)
-- **Performance**: Achieved **96.37% Validation Accuracy** on binary classification (Normal vs Pneumonia).
-- **Status**: Training loop completed and weights exported in `backend/ml/xray_vision/train_xray_model_colab.ipynb`.
+- **Dataset**: MedMNIST (PneumoniaMNIST) — 4,708 training + 524 validation chest X-rays
+- **Performance**: Achieved **~96% Validation Accuracy** on binary classification (Normal vs Pneumonia).
+- **Integration**: The Node.js backend calls `predict.py` via `spawnSync`, tries the CNN first for classification, and merges the result with the LLM-based detailed analysis.
 
-See `backend/ml/evaluation_report.md` for full classification reports and confusion matrices for the completed models.
+All three models follow the same integration pattern: Python `train.py` → `predict.py` (stdin/stdout JSON) → Node.js `spawnSync` wrapper → controller with LLM fallback.
+
+See `backend/ml/evaluation_report.md` for full classification reports and confusion matrices.
 
 ## ⚙️ Local Development
 

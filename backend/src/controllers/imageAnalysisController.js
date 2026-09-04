@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const aiService = require("../services/aiService");
 const { parseAIResponse } = require("../utils/responseParser");
+const { classifyXray } = require("../services/xrayVisionRecommender");
 
 exports.analyzeImage = async (req, res) => {
   try {
@@ -23,6 +24,10 @@ exports.analyzeImage = async (req, res) => {
       });
     }
 
+    // ── Try local CNN model first ───────────────────────────
+    const cnnResult = classifyXray(imagePath);
+
+    // ── Fall back to LLM-based analysis ─────────────────────
     const aiAnalysis = await aiService.analyzeImageWithAI(imagePath);
     const diagnosisResult = parseAIResponse(aiAnalysis);
 
@@ -31,10 +36,24 @@ exports.analyzeImage = async (req, res) => {
       fs.unlinkSync(imagePath);
     }
 
-    res.json({
-      ...diagnosisResult,
-      aiAnalysis, // Include the full AI analysis for detailed display
-    });
+    if (cnnResult && !cnnResult.error) {
+      console.log("Image analysis: CNN model prediction used");
+      res.json({
+        ...diagnosisResult,
+        aiAnalysis,
+        cnnPrediction: cnnResult.prediction,
+        cnnConfidence: cnnResult.confidence,
+        cnnClassProbabilities: cnnResult.class_probabilities,
+        engine: "CNN + LLM",
+      });
+    } else {
+      console.log("Image analysis: CNN unavailable, using LLM only");
+      res.json({
+        ...diagnosisResult,
+        aiAnalysis,
+        engine: "LLM",
+      });
+    }
   } catch (error) {
     console.error("Error analyzing image:", error);
     res
