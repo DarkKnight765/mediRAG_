@@ -209,7 +209,7 @@ exports.googleLogin = async (req, res) => {
     if (err.message?.includes("Token used too late") || err.message?.includes("Invalid token")) {
       return res.status(401).json({ error: "Google token expired or invalid. Please try again." });
     }
-    return res.status(500).json({ error: "Internal server error." });
+    return res.status(500).json({ error: `Internal server error: ${err.message || err}` });
   }
 };
 
